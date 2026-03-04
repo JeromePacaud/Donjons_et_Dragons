@@ -1,6 +1,6 @@
 package fr.campus.dungeoncrawler.stuff;
 
-public class DefensiveStuff extends Stuff {
+public abstract class DefensiveStuff extends Stuff {
 
     private int defenseAmount;
 
@@ -9,16 +9,12 @@ public class DefensiveStuff extends Stuff {
         this.defenseAmount = defenseAmount;
     }
 
-    public int getDefenseLevel() {
-        return defenseAmount;
-    }
-
-    public void setDefenseLevel(int defenseAmount) {
-        this.defenseAmount = defenseAmount;
-    }
+    @Override
+    public int getStatBonus() { return defenseAmount; }
 
     @Override
-    public String toString() {
-        return super.toString() + " (Défense : +" + defenseAmount + ")";
-    }
+    public String getBonusLabel() { return "Défense"; }
+
+    public int getDefenseLevel() { return defenseAmount; }
+    public void setDefenseLevel(int defenseAmount) { this.defenseAmount = defenseAmount; }
 }

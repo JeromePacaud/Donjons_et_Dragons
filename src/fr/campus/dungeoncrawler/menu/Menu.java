@@ -58,6 +58,10 @@ public class Menu {
         return scanner.nextLine();
     }
 
+    public void eatEnter() {
+        scanner.nextLine();
+    }
+
     @Override
     public String toString() {
         return "MENU PRINCIPAL";

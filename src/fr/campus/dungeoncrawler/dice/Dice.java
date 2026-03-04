@@ -8,7 +8,7 @@ public class Dice {
     private Random random;
 
     public Dice(int faces) {
-        this.faces = faces;
+        this.faces  = faces;
         this.random = new Random();
     }
 
@@ -16,16 +16,11 @@ public class Dice {
         return random.nextInt(faces) + 1;
     }
 
-    public int getFaces() {
-        return faces;
-    }
-
-    public void setFaces(int faces) {
-        this.faces = faces;
-    }
+    public int getFaces() { return faces; }
+    public void setFaces(int faces) { this.faces = faces; }
 
     @Override
     public String toString() {
-        return "Dé à " + faces + " faces";
+        return "\uD83C\uDFB2 " + faces + " faces";
     }
 }

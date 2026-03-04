@@ -1,6 +1,6 @@
 package fr.campus.dungeoncrawler.stuff;
 
-public class OffensiveStuff extends Stuff {
+public abstract class OffensiveStuff extends Stuff {
 
     private int damage;
 
@@ -9,16 +9,12 @@ public class OffensiveStuff extends Stuff {
         this.damage = damage;
     }
 
-    public int getAttackLevel() {
-        return damage;
-    }
-
-    public void setAttackLevel(int damage) {
-        this.damage = damage;
-    }
+    @Override
+    public int getStatBonus() { return damage; }
 
     @Override
-    public String toString() {
-        return super.toString() + " (Attaque : +" + damage + ")";
-    }
+    public String getBonusLabel() { return "Attaque"; }
+
+    public int getAttackLevel() { return damage; }
+    public void setAttackLevel(int damage) { this.damage = damage; }
 }
