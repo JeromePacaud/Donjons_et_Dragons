@@ -1,4 +1,7 @@
-package fr.campus.dungeoncrawler.stuff;
+package fr.campus.dungeoncrawler.stuff.defensivestuff;
+
+import fr.campus.dungeoncrawler.stuff.Stuff;
+import fr.campus.dungeoncrawler.character.Character;
 
 public abstract class DefensiveStuff extends Stuff {
 
@@ -15,6 +18,13 @@ public abstract class DefensiveStuff extends Stuff {
     @Override
     public String getBonusLabel() { return "Défense"; }
 
+    @Override
+    public void equip(Character character) {
+        character.setDefensiveStuff(this);
+        character.setLifeLevel(character.getLifeLevel() + getStatBonus());
+    }
+
     public int getDefenseLevel() { return defenseAmount; }
+
     public void setDefenseLevel(int defenseAmount) { this.defenseAmount = defenseAmount; }
 }

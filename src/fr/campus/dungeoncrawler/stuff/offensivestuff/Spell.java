@@ -1,4 +1,4 @@
-package fr.campus.dungeoncrawler.stuff;
+package fr.campus.dungeoncrawler.stuff.offensivestuff;
 
 /**
  * Sort magique — équipement offensif concret pour le Mage.
@@ -12,6 +12,6 @@ public class Spell extends OffensiveStuff {
 
     @Override
     public String toString() {
-        return "Sort : " + getName() + " (Attaque magique : +" + getStatBonus() + ")";
+        return "Sort : " + this.getName() + " (Attaque magique : +" + this.getStatBonus() + ")";
     }
 }
