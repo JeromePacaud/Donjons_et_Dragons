@@ -1,4 +1,6 @@
-package fr.campus.dungeoncrawler.stuff;
+package fr.campus.dungeoncrawler.stuff.defensivestuff.healing;
+
+import fr.campus.dungeoncrawler.stuff.defensivestuff.DefensiveStuff;
 
 /**
  * Potion — équipement défensif concret à usage unique.
@@ -18,6 +20,6 @@ public class Potion extends DefensiveStuff {
 
     @Override
     public String toString() {
-        return "Potion : " + getName() + " (Soin : +" + getStatBonus() + " PV)";
+        return "Potion";
     }
 }

@@ -1,5 +1,7 @@
 package fr.campus.dungeoncrawler.stuff;
 
+import fr.campus.dungeoncrawler.character.Character;
+
 public abstract class Stuff {
 
     private String name;
@@ -15,6 +17,8 @@ public abstract class Stuff {
      * Chaque sous-classe définit ce que cela signifie (attaque, défense, soin, etc.).
      */
     public abstract int getStatBonus();
+
+    public abstract void equip(Character character);
 
     /**
      * Retourne une description textuelle du type de bonus (ex: "Attaque", "Défense").

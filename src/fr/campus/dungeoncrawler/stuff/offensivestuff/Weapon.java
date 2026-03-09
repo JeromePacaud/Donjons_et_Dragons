@@ -1,4 +1,4 @@
-package fr.campus.dungeoncrawler.stuff;
+package fr.campus.dungeoncrawler.stuff.offensivestuff;
 
 /**
  * Arme physique — équipement offensif concret pour le Guerrier.
@@ -13,6 +13,6 @@ public class Weapon extends OffensiveStuff {
 
     @Override
     public String toString() {
-        return "Arme : " + getName() + " (Attaque : +" + getStatBonus() + ")";
+        return "Arme : " + this.getName() + " (Attaque : +" + this.getStatBonus() + ")";
     }
 }
