@@ -2,6 +2,7 @@ package fr.campus.dungeoncrawler.game;
 
 import fr.campus.dungeoncrawler.board.Board;
 import fr.campus.dungeoncrawler.board.tile.ChestTile;
+import fr.campus.dungeoncrawler.board.tile.EnemyTile;
 import fr.campus.dungeoncrawler.board.tile.Tile;
 import fr.campus.dungeoncrawler.character.Character;
 import fr.campus.dungeoncrawler.character.Warrior;
@@ -10,7 +11,8 @@ import fr.campus.dungeoncrawler.db.BoardTable;
 import fr.campus.dungeoncrawler.db.CharacterTable;
 import fr.campus.dungeoncrawler.db.InventoryTable;
 import fr.campus.dungeoncrawler.db.SQLDatabaseConnection;
-import fr.campus.dungeoncrawler.dice.Dice;
+import fr.campus.dungeoncrawler.dice.SixSidedDice;
+import fr.campus.dungeoncrawler.dice.TwentySidedDice;
 import fr.campus.dungeoncrawler.exceptions.OutOfBoardException;
 import fr.campus.dungeoncrawler.menu.Menu;
 
@@ -30,10 +32,9 @@ public class Game {
     private InventoryTable inventoryTable;
     private Character character;
     private Board board;
-    private Dice dice;
+    private SixSidedDice dice;
     private Menu menu;
     private boolean running;
-    private Random random;
 
     /**
      * Constructeur de la classe Game. Initialise les composants du jeu : le plateau, le dé, le menu,
@@ -41,10 +42,9 @@ public class Game {
      */
     public Game() {
         this.board = new Board(64);
-        this.dice = new Dice(6);
+        this.dice = new SixSidedDice();
         this.menu = new Menu();
         this.running = true;
-        this.random = new Random();
         this.db = new SQLDatabaseConnection();
         this.db.getConnection();
         this.db.createDatabase();
@@ -201,6 +201,7 @@ public class Game {
      */
     private void playGame() {
         Board savedBoard = this.boardTable.loadBoard(this.character);
+
         if (savedBoard != null) {
             this.menu.displayMessage("Plateau chargé pour " + this.character.getName() + " !");
             this.board = savedBoard;
@@ -243,16 +244,15 @@ public class Game {
 
             this.displayCharacterStats();
             this.applyTileEffect(this.board.getTile(this.character.getPosition()));
-            this.board.moveEnemy(this.character.getPosition());
             this.board.display(this.character);
             this.menu.displayMessage("Position : case " + (this.character.getPosition() + 1) + " / " + this.board.getSize());
-
-            if (this.character.getLifeLevel() <= 0) {
+            if (this.character.isDead()) {
                 this.menu.displayMessage("\n*** " + this.character.getName() + " est mort ! Game Over ***");
                 this.boardTable.deleteBoardByCharacter(this.character);
                 break;
             }
         }
+
 
         if (this.board.isFinished(this.character)) {
             this.boardTable.deleteBoardByCharacter(this.character);
@@ -286,6 +286,10 @@ public class Game {
      */
     private void applyTileEffect(Tile tile) {
         tile.interact(this.character);
+
+        if (tile instanceof EnemyTile enemyTile && enemyTile.isDefeated()) {
+            this.board.clearTile(this.character.getPosition());
+        }
 
         if (tile instanceof ChestTile chestTile && chestTile.isOpened()) {
             this.board.clearTile(this.character.getPosition());
@@ -345,13 +349,13 @@ public class Game {
     /**
      * @return Le dé utilisé dans le jeu.
      */
-    public Dice getDice() { return this.dice; }
+    public SixSidedDice getDice() { return this.dice; }
 
     /**
      * Définit le dé utilisé dans le jeu.
      * @param dice Le dé à définir pour le jeu.
      */
-    public void setDice(Dice dice) { this.dice = dice; }
+    public void setDice(SixSidedDice dice) { this.dice = dice; }
 
     /**
      * @return Le menu utilisé dans le jeu.

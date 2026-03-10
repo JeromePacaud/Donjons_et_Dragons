@@ -5,6 +5,7 @@ import fr.campus.dungeoncrawler.stuff.defensivestuff.healing.Potion;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.ListIterator;
 
 
 public class Inventory {
@@ -19,22 +20,22 @@ public class Inventory {
 
     public boolean addPotion(Potion potion) {
         if (isFull()) {
-            System.out.println("    ⚠️ Inventaire plein ! Impossible d'ajouter " + potion.getName() + ".");
+            System.out.println("⚠️ Inventaire plein ! Impossible d'ajouter " + potion.getName() + ".");
             return false;
         }
         potions.add(potion);
-        System.out.println("    \uD83D\uDCBC " + potion.getName() + " ajoutée à l'inventaire ! ("
+        System.out.println("\uD83D\uDCBC " + potion.getName() + " ajoutée à l'inventaire ! ("
                 + potions.size() + "/" + max_size + ")");
         return true;
     }
 
 
     public boolean usePotion(Character character) {
-        if (isEmpty()) {
+        if (this.isEmpty()) {
             System.out.println("⚠️ Aucune potion dans l'inventaire !");
             return false;
         }
-        Potion potion = potions.removeFirst();
+        Potion potion = this.potions.removeFirst();
         int newHp = Math.min(character.getLifeLevel() + potion.getStatBonus(), character.getMaxLifeLevel());
         character.setLifeLevel(newHp);
         System.out.println("🧪  " + character.getName() + " utilise " + potion.getName()
@@ -55,10 +56,12 @@ public class Inventory {
     public String toString() {
         if (isEmpty()) return "Inventaire vide";
 
+        ListIterator<Potion> iterator = potions.listIterator();
         String result = "💼 Inventaire (" + potions.size() + "/" + max_size + ") :\n";
 
-        for (int i = 0; i < potions.size(); i++) {
-            result += "  [" + (i + 1) + "] " + potions.get(i).toString() + "\n";
+        while (iterator.hasNext()) {
+            iterator.next();
+            result += "  [" + (iterator.previousIndex()) + "] " + potions.get(iterator.previousIndex()).toString() + "\n";
         }
 
         return result;

@@ -64,10 +64,13 @@ public class EnemyTile extends Tile {
                     if (this.enemy.getLifeLevel() <= 0) {
                         System.out.println("\uD83D\uDC80 " + enemy.getName() + " est vaincu !");
                         this.enemy = null;
+                        combatOver = true;
                     } else {
                         this.enemy.attack(character);
+                        if (character.isDead()) {
+                            combatOver = true;
+                        }
                     }
-                    combatOver = true;
                 }
                 case 2 -> {
                     if (character.getInventory().isEmpty()) {
@@ -75,7 +78,9 @@ public class EnemyTile extends Tile {
                     } else {
                         character.getInventory().usePotion(character);
                         this.enemy.attack(character);
-                        combatOver = true;
+                        if (character.isDead()) {
+                            combatOver = true;
+                        }
                     }
                 }
                 case 3 -> {
@@ -87,35 +92,10 @@ public class EnemyTile extends Tile {
         }
     }
 
-   /*
-    private void attack(Character character) {
-        int characterDamage = character.getAttackLevel();
-        this.enemy.setLifeLevel(enemy.getLifeLevel() - characterDamage);
-        System.out.println(
-            "\n>>> " + character.getName() + " inflige "
-            + characterDamage + " points de dégâts à " + this.enemy.getName()
-            + "(" + enemy.getName() + " PV : " + Math.max(enemy.getLifeLevel(), 0) + ")"
-        );
-
-        if (this.enemy.getLifeLevel() <= 0) {
-            System.out.println("\uD83D\uDC80 " + enemy.getName() + " est vaincu !");
-            this.enemy = null;
-        } else {
-            enemyAttack(character);
-        }
-    }
-
-    private void enemyAttack(Character character) {
-        int enemyDamage = Math.max(this.enemy.getAttackLevel() - character.getDefenseLevel(), 0);
-        character.setLifeLevel(character.getLifeLevel() - enemyDamage);
-        System.out.println("    " + this.enemy.getName() + " riposte et inflige " + enemyDamage + " dégâts. "
-            + "(" + character.getName() + " PV : " + character.getLifeLevel() + ")");
-        System.out.println("    \uD83D\uDCA8 " + this.enemy.getName() + " prend la fuite !");
-    }*/
-
     public boolean isDefeated() {
         return this.enemy == null;
     }
+
     /**
      * Retourne l'image de la tuile, qui est l'image de l'ennemi présent sur cette tuile.
      * @return L'image de la tuile.

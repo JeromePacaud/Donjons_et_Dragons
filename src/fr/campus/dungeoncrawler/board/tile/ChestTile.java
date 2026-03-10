@@ -64,7 +64,7 @@ public class ChestTile extends Tile {
 
         if (reward instanceof Potion potion) {
             if (character.getInventory().isFull()) {
-                System.out.println("    ⚠️ Inventaire plein ! La potion est abandonnée.");
+                System.out.println("⚠️ Inventaire plein ! La potion est abandonnée.");
             } else {
                 character.getInventory().addPotion(potion);
             }

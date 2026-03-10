@@ -1,6 +1,7 @@
 package fr.campus.dungeoncrawler.character;
 
 import fr.campus.dungeoncrawler.character.enemy.Enemy;
+import fr.campus.dungeoncrawler.dice.TwentySidedDice;
 import fr.campus.dungeoncrawler.exceptions.OutOfBoardException;
 import fr.campus.dungeoncrawler.inventory.Inventory;
 import fr.campus.dungeoncrawler.stuff.Stuff;
@@ -28,6 +29,7 @@ public abstract class Character {
     private Stuff offensiveStuff;
     private Stuff defensiveStuff;
     private Inventory inventory;
+    private TwentySidedDice dice;
 
     /**
      * Constructeur de la classe Character. Initialise les propriétés de base du personnage.
@@ -46,6 +48,7 @@ public abstract class Character {
         this.offensiveStuff = null;
         this.defensiveStuff = null;
         this.inventory = new Inventory();
+        this.dice = new TwentySidedDice();
     }
 
     /**
@@ -82,8 +85,8 @@ public abstract class Character {
     public void equip(Stuff stuff) {
         if (!canEquip(stuff)) {
             System.out.println(
-                    "    Le " + this.getType() + " ne peuvent pas porter se type d'item : " + stuff.getName()
-                    + "\n    Récompense abandonnée !"
+                    "Le " + this.getType() + " ne peuvent pas porter se type d'item : " + stuff.getName()
+                    + "\nRécompense abandonnée !"
             );
             return;
         }
@@ -91,11 +94,11 @@ public abstract class Character {
             if (this.getOffensiveStuff() == null || this.getOffensiveStuff().getStatBonus() < stuff.getStatBonus()) {
                 this.setOffensiveStuff(stuff);
                 this.setAttackLevel(this.getAttackLevel() + stuff.getStatBonus());
-                System.out.println("    Équipé : " + stuff);
+                System.out.println("Équipé : " + stuff);
             } else {
                 System.out.println(
-                    "    Le niveau d'attaque de " + stuff.getName() + " est inférieur au niveau d'attaque actuel \n"
-                    + "    Récompense abandonnée !"
+                    "Le niveau d'attaque de " + stuff.getName() + " est inférieur au niveau d'attaque actuel \n"
+                    + "Récompense abandonnée !"
                 );
             }
         } else if (stuff instanceof Potion) {
@@ -111,7 +114,7 @@ public abstract class Character {
         } else if (stuff instanceof Shield || stuff instanceof ProtectionSpell) {
             this.setDefensiveStuff(stuff);
             this.setDefenseLevel(this.getDefenseLevel() + stuff.getStatBonus());
-            System.out.println("    Équipé : " + stuff);
+            System.out.println("Équipé : " + stuff);
         }
     }
 
@@ -148,7 +151,7 @@ public abstract class Character {
         int halfDmg = Math.max((enemy.getAttackLevel() - this.defense) / 2, 0);
         this.lifePoints -= halfDmg;
 
-        int recoil = 1 + random.nextInt(3);
+        int recoil = 1 + random.nextInt(6);
         int newPos = Math.max(this.position - recoil, 0);
         this.position  = newPos;
 
@@ -161,12 +164,28 @@ public abstract class Character {
     }
 
     public void attack(Enemy enemy) {
-        enemy.setLifeLevel(enemy.getLifeLevel() - this.getAttackLevel());
+        int bonus = 0;
+        int roll = this.dice.roll();
+        System.out.println("Vous avez obtenu : " + roll + " avec le " + this.dice);
+        if (roll == 1) {
+            System.out.println("❌ Vous manquez votre attaque !");
+            bonus -= this.damage;
+        }  else if (roll == 20) {
+            bonus = 2;
+            System.out.println("\uD83D\uDCA5 attaque critique ! Dégats + 2 : " + (this.getAttackLevel() + bonus));
+        }
+
+        int dmg = this.getAttackLevel() + bonus;
+        enemy.setLifeLevel(enemy.getLifeLevel() - dmg);
         System.out.println(
                 "\n>>> " + this.getName() + " inflige "
-                + this.getAttackLevel() + " points de dégâts à " + enemy.getName()
+                + dmg + " points de dégâts à " + enemy.getName()
                 + "(" + enemy.getName() + " PV : " + Math.max(enemy.getLifeLevel(), 0) + ")"
         );
+    }
+
+    public boolean isDead() {
+        return this.lifePoints <= 0;
     }
 
     public abstract int getBaseAttackLevel();

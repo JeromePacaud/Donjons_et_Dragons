@@ -96,7 +96,7 @@ public class Board {
         } else {
             int newIndex = findEmptyTile(tileIndex);
             if (newIndex != -1) {
-                this.tiles[newIndex]  = enemyTile;
+                this.tiles[newIndex] = enemyTile;
                 this.tiles[tileIndex] = new EmptyTile();
                 // System.out.println("💨 " + enemyTile.getEnemy().getName() + " fuit à la case " + (newIndex + 1) + " !");
             } else {

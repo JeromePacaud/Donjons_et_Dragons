@@ -20,9 +20,7 @@ public class CharacterTable {
 
     private Connection connection;
 
-    public CharacterTable(Connection connection) {
-        this.connection = connection;
-    }
+    public CharacterTable(Connection connection) {this.connection = connection;}
 
     public void createCharacterTable() {
         String sql = "CREATE TABLE IF NOT EXISTS characters ("

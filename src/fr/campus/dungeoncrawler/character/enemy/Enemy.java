@@ -14,9 +14,9 @@ public abstract class Enemy extends Character {
     public void attack(Character character) {
         int enemyDamage = Math.max(this.getAttackLevel() - character.getDefenseLevel(), 0);
         character.setLifeLevel(character.getLifeLevel() - enemyDamage);
-        System.out.println("    " + this.getName() + " riposte et inflige " + enemyDamage + " dégâts. "
+        System.out.println(">>> " + this.getName() + " riposte et inflige " + enemyDamage + " dégâts. "
                 + "(" + character.getName() + " PV : " + character.getLifeLevel() + ")");
-        System.out.println("    \uD83D\uDCA8 " + this.getName() + " prend la fuite !");
+        // System.out.println("\uD83D\uDCA8 " + this.getName() + " prend la fuite !");
     }
 
     @Override
