@@ -41,7 +41,7 @@ public class Game {
      * la connexion à la base de données et les variables de contrôle.
      */
     public Game() {
-        this.board = new Board(64);
+        this.board = new Board(74);
         this.dice = new SixSidedDice();
         this.menu = new Menu();
         this.running = true;
@@ -206,7 +206,7 @@ public class Game {
             this.menu.displayMessage("Plateau chargé pour " + this.character.getName() + " !");
             this.board = savedBoard;
         } else {
-            this.board = new Board(64);
+            this.board = new Board(74);
             this.character.reset();
         }
 

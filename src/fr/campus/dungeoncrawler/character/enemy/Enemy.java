@@ -19,6 +19,8 @@ public abstract class Enemy extends Character {
         // System.out.println("\uD83D\uDCA8 " + this.getName() + " prend la fuite !");
     }
 
+    public abstract boolean canAttack(Character character);
+
     @Override
     public boolean canEquip(Stuff stuff) {
         return false;

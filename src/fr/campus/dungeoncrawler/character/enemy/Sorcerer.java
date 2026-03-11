@@ -1,5 +1,7 @@
 package fr.campus.dungeoncrawler.character.enemy;
 
+import fr.campus.dungeoncrawler.character.Character;
+
 public class Sorcerer extends Enemy{
     public Sorcerer() {
         super("Sorcier", "Sorcier");
@@ -24,6 +26,9 @@ public class Sorcerer extends Enemy{
     public int getMaxLifeLevel() {
         return this.getLifeLevel();
     }
+
+    @Override
+    public boolean canAttack(Character character) { return true; }
 
     @Override
     public String toString() {

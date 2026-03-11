@@ -3,6 +3,7 @@ package fr.campus.dungeoncrawler.board;
 import fr.campus.dungeoncrawler.board.tile.*;
 import fr.campus.dungeoncrawler.character.Character;
 import fr.campus.dungeoncrawler.character.enemy.*;
+import fr.campus.dungeoncrawler.exceptions.NoEmptyTileExceptions;
 import fr.campus.dungeoncrawler.stuff.defensivestuff.defense.ProtectionSpell;
 import fr.campus.dungeoncrawler.stuff.defensivestuff.defense.WoodShield;
 import fr.campus.dungeoncrawler.stuff.defensivestuff.healing.BigPotion;
@@ -51,34 +52,49 @@ public class Board {
         this.tiles[0] = new StartTile();
         this.tiles[this.tiles.length - 1] = new EndTile();
 
-        for (int i = 0; i < 4;  i++) placeRandomTiles(new EnemyTile(new Dragon()));
-        for (int i = 0; i < 10; i++) placeRandomTiles(new EnemyTile(new Sorcerer()));
-        for (int i = 0; i < 10; i++) placeRandomTiles(new EnemyTile(new Goblin()));
-        for (int i = 0; i < 4; i++) placeRandomTiles(new EnemyTile(new Orc()));
-        for (int i = 0; i < 4; i++) placeRandomTiles(new EnemyTile(new EvilSpirit()));
-        for (int i = 0; i < 5; i++) placeRandomTiles(new ChestTile(new Mace()));
-        for (int i = 0; i < 4; i++) placeRandomTiles(new ChestTile(new Sword()));
-        for (int i = 0; i < 5; i++) placeRandomTiles(new ChestTile(new Lightning()));
-        for (int i = 0; i < 2; i++) placeRandomTiles(new ChestTile(new Fireball()));
-        for (int i = 0; i < 6; i++) placeRandomTiles(new ChestTile(new StandardPotion()));
-        for (int i = 0; i < 2; i++) placeRandomTiles(new ChestTile(new BigPotion()));
-        for (int i = 0; i < 2; i++) placeRandomTiles(new ChestTile(new WoodShield()));
-        for (int i = 0; i < 2; i++) placeRandomTiles(new ChestTile(new ProtectionSpell()));
+        try {
+            for (int i = 0; i < 4; i++) placeRandomTiles(new EnemyTile(new Dragon()));
+            for (int i = 0; i < 10; i++) placeRandomTiles(new EnemyTile(new Sorcerer()));
+            for (int i = 0; i < 10; i++) placeRandomTiles(new EnemyTile(new Goblin()));
+            for (int i = 0; i < 4; i++) placeRandomTiles(new EnemyTile(new Orc()));
+            for (int i = 0; i < 4; i++) placeRandomTiles(new EnemyTile(new EvilSpirit()));
+            for (int i = 0; i < 5; i++) placeRandomTiles(new ChestTile(new Mace()));
+            for (int i = 0; i < 4; i++) placeRandomTiles(new ChestTile(new Sword()));
+            for (int i = 0; i < 5; i++) placeRandomTiles(new ChestTile(new Lightning()));
+            for (int i = 0; i < 2; i++) placeRandomTiles(new ChestTile(new Fireball()));
+            for (int i = 0; i < 6; i++) placeRandomTiles(new ChestTile(new StandardPotion()));
+            for (int i = 0; i < 2; i++) placeRandomTiles(new ChestTile(new BigPotion()));
+            for (int i = 0; i < 2; i++) placeRandomTiles(new ChestTile(new WoodShield()));
+            for (int i = 0; i < 2; i++) placeRandomTiles(new ChestTile(new ProtectionSpell()));
+        } catch (NoEmptyTileExceptions e) {
+            System.err.println("Erreur lors de l'initialisation du plateau : " + e.getMessage());
+        }
     }
 
     /**
      * Place un certain nombre de tuiles aléatoirement sur le plateau, en évitant les cases déjà occupées.
      * @param tile
      */
-    private void placeRandomTiles(Tile tile) {
+    private void placeRandomTiles(Tile tile) throws NoEmptyTileExceptions {
         boolean placed = false;
+        int attempts = 0;
+        int maxAttempts = this.tiles.length;
 
         while (!placed) {
+            if (attempts == maxAttempts) {
+                throw new NoEmptyTileExceptions(
+                    "Impossible de placer la tuile"
+                    + tile.getType()
+                    + " : aucune case vide disponible après "
+                    + attempts + " tentatives."
+                );
+            }
             int index = 1 + random.nextInt(this.tiles.length - 2);
             if (Objects.equals(this.tiles[index].getType(), "Empty")) {
                 this.tiles[index] = tile;
                 placed = true;
             }
+            attempts++;
         }
     }
 

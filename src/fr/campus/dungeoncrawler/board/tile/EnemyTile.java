@@ -50,6 +50,12 @@ public class EnemyTile extends Tile {
             return;
         }
 
+        if (!this.enemy.canAttack(character)) {
+            System.out.println(">>> " + this.enemy.getName() + " Vous ignore et disparaît...");
+            this.enemy = null;
+            return;
+        }
+
         System.out.println("\n>>> Ennemi : \n" + this.enemy.toString());
         System.out.println(">>> ⚔️ Combat ! "  + character.getName() + " affronte " + this.enemy.getName());
 

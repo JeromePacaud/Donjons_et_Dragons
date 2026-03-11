@@ -1,6 +1,6 @@
 package fr.campus.dungeoncrawler.character.enemy;
 
-import fr.campus.dungeoncrawler.stuff.Stuff;
+import fr.campus.dungeoncrawler.character.Character;
 
 public class Goblin extends Enemy{
     public Goblin() {
@@ -26,6 +26,9 @@ public class Goblin extends Enemy{
     public int getMaxLifeLevel() {
         return this.getLifeLevel();
     }
+
+    @Override
+    public boolean canAttack(Character character) { return true; }
 
     @Override
     public String toString() {

@@ -30,13 +30,7 @@ public class Orc extends Enemy{
     }
 
     @Override
-    public void attack(Character character) {
-        if (!(character instanceof Warrior)) {
-            System.out.println(">>> " + this.getName() + " Vous ignore... Il ne s'en prend qu'au guerrier.");
-            return;
-        }
-        super.attack(character);
-    }
+    public boolean canAttack(Character character) { return character instanceof Warrior; }
 
     @Override
     public String toString() {
