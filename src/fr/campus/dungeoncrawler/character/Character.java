@@ -93,7 +93,7 @@ public abstract class Character {
         if (stuff instanceof OffensiveStuff) {
             if (this.getOffensiveStuff() == null || this.getOffensiveStuff().getStatBonus() < stuff.getStatBonus()) {
                 this.setOffensiveStuff(stuff);
-                this.setAttackLevel(this.getAttackLevel() + stuff.getStatBonus());
+                this.setAttackLevel(this.getBaseAttackLevel() + stuff.getStatBonus());
                 System.out.println("Équipé : " + stuff);
             } else {
                 System.out.println(

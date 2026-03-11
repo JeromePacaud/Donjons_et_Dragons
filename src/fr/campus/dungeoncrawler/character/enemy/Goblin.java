@@ -9,7 +9,7 @@ public class Goblin extends Enemy{
 
     @Override
     public String getCharacterImage() {
-        return "\uD83E\uDDCC";
+        return "\uD83E\uDDDF";
     }
 
     @Override
