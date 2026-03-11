@@ -2,9 +2,7 @@ package fr.campus.dungeoncrawler.board;
 
 import fr.campus.dungeoncrawler.board.tile.*;
 import fr.campus.dungeoncrawler.character.Character;
-import fr.campus.dungeoncrawler.character.enemy.Dragon;
-import fr.campus.dungeoncrawler.character.enemy.Goblin;
-import fr.campus.dungeoncrawler.character.enemy.Sorcerer;
+import fr.campus.dungeoncrawler.character.enemy.*;
 import fr.campus.dungeoncrawler.stuff.defensivestuff.defense.ProtectionSpell;
 import fr.campus.dungeoncrawler.stuff.defensivestuff.defense.WoodShield;
 import fr.campus.dungeoncrawler.stuff.defensivestuff.healing.BigPotion;
@@ -56,6 +54,8 @@ public class Board {
         for (int i = 0; i < 4;  i++) placeRandomTiles(new EnemyTile(new Dragon()));
         for (int i = 0; i < 10; i++) placeRandomTiles(new EnemyTile(new Sorcerer()));
         for (int i = 0; i < 10; i++) placeRandomTiles(new EnemyTile(new Goblin()));
+        for (int i = 0; i < 4; i++) placeRandomTiles(new EnemyTile(new Orc()));
+        for (int i = 0; i < 4; i++) placeRandomTiles(new EnemyTile(new EvilSpirit()));
         for (int i = 0; i < 5; i++) placeRandomTiles(new ChestTile(new Mace()));
         for (int i = 0; i < 4; i++) placeRandomTiles(new ChestTile(new Sword()));
         for (int i = 0; i < 5; i++) placeRandomTiles(new ChestTile(new Lightning()));

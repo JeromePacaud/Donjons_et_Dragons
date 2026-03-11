@@ -3,9 +3,7 @@ package fr.campus.dungeoncrawler.db;
 import fr.campus.dungeoncrawler.board.Board;
 import fr.campus.dungeoncrawler.board.tile.*;
 import fr.campus.dungeoncrawler.character.Character;
-import fr.campus.dungeoncrawler.character.enemy.Dragon;
-import fr.campus.dungeoncrawler.character.enemy.Goblin;
-import fr.campus.dungeoncrawler.character.enemy.Sorcerer;
+import fr.campus.dungeoncrawler.character.enemy.*;
 import fr.campus.dungeoncrawler.stuff.Stuff;
 import fr.campus.dungeoncrawler.stuff.defensivestuff.defense.ProtectionSpell;
 import fr.campus.dungeoncrawler.stuff.defensivestuff.defense.WoodShield;
@@ -185,9 +183,31 @@ public class BoardTable {
 
     private EnemyTile buildEnemyTile(String enemyType, int enemyHp) {
         switch (enemyType) {
-            case "Dragon": Dragon d = new Dragon(); d.setLifeLevel(enemyHp); return new EnemyTile(d);
-            case "Sorcerer": Sorcerer s = new Sorcerer(); s.setLifeLevel(enemyHp); return new EnemyTile(s);
-            case "Goblin": Goblin g = new Goblin(); g.setLifeLevel(enemyHp); return new EnemyTile(g);
+            case "Dragon": {
+                Dragon d = new Dragon();
+                d.setLifeLevel(enemyHp);
+                return new EnemyTile(d);
+            }
+            case "Sorcerer": {
+                Sorcerer s = new Sorcerer();
+                s.setLifeLevel(enemyHp);
+                return new EnemyTile(s);
+            }
+            case "Goblin": {
+                Goblin g = new Goblin();
+                g.setLifeLevel(enemyHp);
+                return new EnemyTile(g);
+            }
+            case "Orc": {
+                Orc o = new Orc();
+                o.setLifeLevel(enemyHp);
+                return new EnemyTile(o);
+            }
+            case "EvilSpirit" : {
+                EvilSpirit es = new EvilSpirit();
+                es.setLifeLevel(enemyHp);
+                return new EnemyTile(es);
+            }
             default: return null;
         }
     }
