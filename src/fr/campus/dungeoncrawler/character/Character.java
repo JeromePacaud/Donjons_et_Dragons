@@ -85,7 +85,7 @@ public abstract class Character {
     public void equip(Stuff stuff) {
         if (!canEquip(stuff)) {
             System.out.println(
-                    "Le " + this.getType() + " ne peuvent pas porter se type d'item : " + stuff.getName()
+                    ">>> Le " + this.getType() + " ne peuvent pas porter se type d'item : " + stuff.getName()
                     + "\nRécompense abandonnée !"
             );
             return;
@@ -94,10 +94,10 @@ public abstract class Character {
             if (this.getOffensiveStuff() == null || this.getOffensiveStuff().getStatBonus() < stuff.getStatBonus()) {
                 this.setOffensiveStuff(stuff);
                 this.setAttackLevel(this.getBaseAttackLevel() + stuff.getStatBonus());
-                System.out.println("Équipé : " + stuff);
+                System.out.println(">>> Équipé : " + stuff);
             } else {
                 System.out.println(
-                    "Le niveau d'attaque de " + stuff.getName() + " est inférieur au niveau d'attaque actuel \n"
+                    ">>> Le niveau d'attaque de " + stuff.getName() + " est inférieur au niveau d'attaque actuel \n"
                     + "Récompense abandonnée !"
                 );
             }
@@ -109,19 +109,19 @@ public abstract class Character {
                 );
             } else {
                 this.setLifeLevel(Math.min(getLifeLevel() + stuff.getStatBonus(), getMaxLifeLevel()));
-                System.out.println(stuff + " Potion bue ! (PV : " + this.getLifeLevel() + ")");;
+                System.out.println(">>> " + stuff + " Potion bue ! (PV : " + this.getLifeLevel() + ")");;
             }
         } else if (stuff instanceof Shield || stuff instanceof ProtectionSpell) {
             this.setDefensiveStuff(stuff);
             this.setDefenseLevel(this.getDefenseLevel() + stuff.getStatBonus());
-            System.out.println("Équipé : " + stuff);
+            System.out.println(">>> Équipé : " + stuff);
         }
     }
 
     public void equipFromInventory(OffensiveStuff stuff) {
         this.setOffensiveStuff(stuff);
         this.setAttackLevel(this.getBaseAttackLevel() + stuff.getStatBonus());
-        System.out.println("🗡️ " + this.getName() + " équipe : " + stuff.getName() + " (PA: " + this.getAttackLevel() + ")");
+        System.out.println(">>> 🗡️ " + this.getName() + " équipe : " + stuff.getName() + " (PA: " + this.getAttackLevel() + ")");
     }
 
     /**
@@ -137,7 +137,7 @@ public abstract class Character {
         if (this.position >= totalCases) {
             this.position = totalCases - 1;
             throw new OutOfBoardException(
-                name + " dépasse la dernière case ! Position plafonnée à " + totalCases + "."
+                ">>> " + name + " dépasse la dernière case ! Position plafonnée à " + totalCases + "."
             );
         }
     }
@@ -161,24 +161,24 @@ public abstract class Character {
         int newPos = Math.max(this.position - recoil, 0);
         this.position  = newPos;
 
-        System.out.println("🏃 " + this.name + " prend la fuite !");
+        System.out.println(">>> 🏃 " + this.name + " prend la fuite !");
         if (halfDmg > 0) {
-            System.out.println("💥 " + enemy.getName() + " inflige " + halfDmg
+            System.out.println(">>> 💥 " + enemy.getName() + " inflige " + halfDmg
                     + " dégâts dans le dos. (PV : " + this.lifePoints + ")");
         }
-        System.out.println(this.name + " recule à la case " + (newPos + 1) + " !");
+        System.out.println(">>> " + this.name + " recule à la case " + (newPos + 1) + " !");
     }
 
     public void attack(Enemy enemy) {
         int bonus = 0;
         int roll = this.dice.roll();
-        System.out.println("Vous avez obtenu : " + roll + " avec le " + this.dice);
+        System.out.println(">>> Vous avez obtenu : " + roll + " avec le " + this.dice);
         if (roll == 1) {
-            System.out.println("❌ Vous manquez votre attaque !");
+            System.out.println(">>> ❌ Vous manquez votre attaque !");
             bonus -= this.damage;
         }  else if (roll == 20) {
             bonus = 2;
-            System.out.println("\uD83D\uDCA5 attaque critique ! Dégats + 2 : " + (this.getAttackLevel() + bonus));
+            System.out.println(">>> \uD83D\uDCA5 attaque critique ! Dégats + 2 : " + (this.getAttackLevel() + bonus));
         }
 
         int dmg = this.getAttackLevel() + bonus;
@@ -270,7 +270,9 @@ public abstract class Character {
      * Getter pour le niveau d'attaque du personnage.
      * @return Le niveau d'attaque du personnage
      */
-    public int getAttackLevel() { return damage; }
+    public int getAttackLevel() {
+        return damage;
+    }
 
     /**
     * Setter pour le niveau d'attaque du personnage.

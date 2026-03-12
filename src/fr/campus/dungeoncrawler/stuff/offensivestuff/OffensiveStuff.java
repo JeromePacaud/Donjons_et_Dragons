@@ -1,5 +1,6 @@
 package fr.campus.dungeoncrawler.stuff.offensivestuff;
 
+import fr.campus.dungeoncrawler.character.enemy.Enemy;
 import fr.campus.dungeoncrawler.stuff.Stuff;
 import fr.campus.dungeoncrawler.character.Character;
 
@@ -10,6 +11,10 @@ public abstract class OffensiveStuff extends Stuff {
     public OffensiveStuff(String name, String type, int damage) {
         super(name, type);
         this.damage = damage;
+    }
+
+    public int getDamageAgainst(Enemy enemy) {
+        return this.getStatBonus();
     }
 
     @Override

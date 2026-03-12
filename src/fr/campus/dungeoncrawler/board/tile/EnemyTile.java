@@ -95,7 +95,7 @@ public class EnemyTile extends Tile {
 
     private boolean isCombatOver(Character character, boolean combatOver) {
         if (this.enemy.getLifeLevel() <= 0) {
-            System.out.println("💀 " + this.enemy.getName() + " est vaincu !");
+            System.out.println(">>> 💀 " + this.enemy.getName() + " est vaincu !");
             this.enemy = null;
             combatOver = true;
         } else {

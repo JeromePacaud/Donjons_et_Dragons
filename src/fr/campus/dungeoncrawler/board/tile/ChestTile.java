@@ -60,7 +60,7 @@ public class ChestTile extends Tile {
 
     private void handlePotion(Potion potion, Character character) {
         if (character.getInventory().isPotionsFull()) {
-            System.out.println("⚠️ Inventaire plein de potions ! La potion est abandonnée.");
+            System.out.println(">>> ⚠️ Inventaire plein de potions ! La potion est abandonnée.");
             return;
         }
 
@@ -71,11 +71,11 @@ public class ChestTile extends Tile {
             if (choice == 1) {
                 int newHp = Math.min(character.getLifeLevel() + potion.getStatBonus(), character.getMaxLifeLevel());
                 character.setLifeLevel(newHp);
-                System.out.println("🧪 Potion bue ! (PV : " + character.getLifeLevel() + "/" + character.getMaxLifeLevel() + ")");
+                System.out.println(">>> 🧪 Potion bue ! (PV : " + character.getLifeLevel() + "/" + character.getMaxLifeLevel() + ")");
                 return;
             }
         } else {
-            System.out.println("⚠️ PV déjà au maximum ! La potion est ajoutée à l'inventaire.");
+            System.out.println(">>> ⚠️ PV déjà au maximum ! La potion est ajoutée à l'inventaire.");
         }
         character.getInventory().addPotion(potion);
     }
@@ -96,7 +96,7 @@ public class ChestTile extends Tile {
         if (choice >= 1 && choice <= character.getInventory().getWeaponsSize()) {
             character.getInventory().replaceWeapon(choice - 1, stuff);
         } else {
-            System.out.println("❌ " + stuff.getName() + " abandonné !");
+            System.out.println(">>> ❌ " + stuff.getName() + " abandonné !");
         }
     }
 
@@ -109,7 +109,7 @@ public class ChestTile extends Tile {
         System.out.println("\n>>> \uD83D\uDD4B COFFRE ! Vous trouvez : " + reward);
 
         if (!character.canEquip(reward)) {
-            System.out.println("❌ Votre classe ne peut pas utiliser : " + reward.getName() + ". Abandonné !");
+            System.out.println(">>> ❌ Votre classe ne peut pas utiliser : " + reward.getName() + ". Abandonné !");
             opened = true;
             return;
         }

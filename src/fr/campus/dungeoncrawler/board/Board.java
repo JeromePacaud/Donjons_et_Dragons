@@ -8,10 +8,7 @@ import fr.campus.dungeoncrawler.stuff.defensivestuff.defense.ProtectionSpell;
 import fr.campus.dungeoncrawler.stuff.defensivestuff.defense.WoodShield;
 import fr.campus.dungeoncrawler.stuff.defensivestuff.healing.BigPotion;
 import fr.campus.dungeoncrawler.stuff.defensivestuff.healing.StandardPotion;
-import fr.campus.dungeoncrawler.stuff.offensivestuff.armory.Fireball;
-import fr.campus.dungeoncrawler.stuff.offensivestuff.armory.Lightning;
-import fr.campus.dungeoncrawler.stuff.offensivestuff.armory.Mace;
-import fr.campus.dungeoncrawler.stuff.offensivestuff.armory.Sword;
+import fr.campus.dungeoncrawler.stuff.offensivestuff.armory.*;
 
 import java.util.Objects;
 import java.util.Random;
@@ -60,6 +57,7 @@ public class Board {
             for (int i = 0; i < 4; i++) placeRandomTiles(new EnemyTile(new EvilSpirit()));
             for (int i = 0; i < 5; i++) placeRandomTiles(new ChestTile(new Mace()));
             for (int i = 0; i < 4; i++) placeRandomTiles(new ChestTile(new Sword()));
+            for (int i = 0; i < 3; i++) placeRandomTiles(new ChestTile(new Bow()));
             for (int i = 0; i < 5; i++) placeRandomTiles(new ChestTile(new Lightning()));
             for (int i = 0; i < 2; i++) placeRandomTiles(new ChestTile(new Fireball()));
             for (int i = 0; i < 6; i++) placeRandomTiles(new ChestTile(new StandardPotion()));
