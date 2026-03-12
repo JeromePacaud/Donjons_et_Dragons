@@ -3,6 +3,7 @@ package fr.campus.dungeoncrawler.board.tile;
 import fr.campus.dungeoncrawler.character.enemy.Enemy;
 import fr.campus.dungeoncrawler.character.Character;
 import fr.campus.dungeoncrawler.menu.Menu;
+import fr.campus.dungeoncrawler.stuff.offensivestuff.OffensiveStuff;
 
 /**
  * Représente une tuile contenant un ennemi.
@@ -44,20 +45,16 @@ public class EnemyTile extends Tile {
      */
     @Override
     public void interact(Character character) {
-        if (this.enemy == null) {
-            // TODO : Utiliser EmptyTile.interact() ??
-            //System.out.println("\n>>> Case vide, rien ne se passe.");
-            return;
-        }
+        if (this.enemy == null) return;
 
         if (!this.enemy.canAttack(character)) {
-            System.out.println(">>> " + this.enemy.getName() + " Vous ignore et disparaît...");
+            System.out.println(">>> " + this.enemy.getName() + " vous ignore et disparaît...");
             this.enemy = null;
             return;
         }
 
-        System.out.println("\n>>> Ennemi : \n" + this.enemy.toString());
-        System.out.println(">>> ⚔️ Combat ! "  + character.getName() + " affronte " + this.enemy.getName());
+        System.out.println("\n>>> Ennemi : \n" + this.enemy);
+        System.out.println(">>> ⚔️ Combat ! " + character.getName() + " affronte " + this.enemy.getName());
 
         boolean combatOver = false;
         while (!combatOver) {
@@ -67,35 +64,62 @@ public class EnemyTile extends Tile {
             switch (choice) {
                 case 1 -> {
                     character.attack(this.enemy);
-                    if (this.enemy.getLifeLevel() <= 0) {
-                        System.out.println("\uD83D\uDC80 " + enemy.getName() + " est vaincu !");
-                        this.enemy = null;
-                        combatOver = true;
-                    } else {
-                        this.enemy.attack(character);
-                        if (character.isDead()) {
-                            combatOver = true;
-                        }
-                    }
+                    combatOver = isCombatOver(character, combatOver);
                 }
                 case 2 -> {
-                    if (character.getInventory().isEmpty()) {
+                    if (character.getInventory().isWeaponsEmpty()) {
+                        System.out.println("Inventaire d'armes vide");
+                        continue;
+                    } else {
+                        selectWeaponAndAttack(character);
+                    }
+                    combatOver = isCombatOver(character, combatOver);
+                }
+                case 3 -> {
+                    if (character.getInventory().isPotionsEmpty()) {
                         System.out.println("⚠️ Aucune potion dans l'inventaire !");
                     } else {
                         character.getInventory().usePotion(character);
                         this.enemy.attack(character);
-                        if (character.isDead()) {
-                            combatOver = true;
-                        }
+                        if (character.isDead()) combatOver = true;
                     }
                 }
-                case 3 -> {
+                case 4 -> {
                     character.flee(this.enemy);
                     combatOver = true;
                 }
                 default -> System.out.println("Choix invalide.");
             }
         }
+    }
+
+    private boolean isCombatOver(Character character, boolean combatOver) {
+        if (this.enemy.getLifeLevel() <= 0) {
+            System.out.println("💀 " + this.enemy.getName() + " est vaincu !");
+            this.enemy = null;
+            combatOver = true;
+        } else {
+            this.enemy.attack(character);
+            if (character.isDead()) combatOver = true;
+        }
+        return combatOver;
+    }
+
+    private void selectWeaponAndAttack(Character character) {
+
+        this.menu.displayWeaponSelectMenu(character);
+
+        int weaponChoice = this.menu.readInt();
+
+        if (weaponChoice >= 1 && weaponChoice <= character.getInventory().getWeaponsSize()) {
+            OffensiveStuff chosen = character.getInventory().getWeapon(weaponChoice - 1);
+
+            if (!chosen.equals(character.getOffensiveStuff())) {
+                character.equipFromInventory(chosen);
+            }
+        }
+
+        character.attack(this.enemy);
     }
 
     public boolean isDefeated() {

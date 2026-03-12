@@ -118,6 +118,12 @@ public abstract class Character {
         }
     }
 
+    public void equipFromInventory(OffensiveStuff stuff) {
+        this.setOffensiveStuff(stuff);
+        this.setAttackLevel(this.getBaseAttackLevel() + stuff.getStatBonus());
+        System.out.println("🗡️ " + this.getName() + " équipe : " + stuff.getName() + " (PA: " + this.getAttackLevel() + ")");
+    }
+
     /**
      * Méthode pour déplacer le personnage sur le plateau de jeu. La position du personnage est mise à jour
      * en fonction du nombre de cases à avancer. Si le personnage dépasse la dernière case du plateau,

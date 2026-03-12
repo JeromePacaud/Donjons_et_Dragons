@@ -1,6 +1,9 @@
 package fr.campus.dungeoncrawler.menu;
 
 import fr.campus.dungeoncrawler.character.Character;
+import fr.campus.dungeoncrawler.character.Warrior;
+import fr.campus.dungeoncrawler.stuff.defensivestuff.healing.Potion;
+import fr.campus.dungeoncrawler.stuff.offensivestuff.OffensiveStuff;
 
 import java.util.Scanner;
 
@@ -47,10 +50,49 @@ public class Menu {
 
     public void displayCombatMenu(Character character) {
         System.out.println("\n⚔️  Que faites-vous ?");
+
         System.out.println("[1] Attaquer");
-        System.out.println("[2] Utiliser une potion"
-                + (character.getInventory().isEmpty() ? " (vide)" : " (" + character.getInventory().getSize() + " dispo)"));
-        System.out.println("[3] Fuir");
+
+        String weaponInfo = character.getInventory().isWeaponsEmpty()
+                ? character instanceof Warrior ? " (poing)" : " (ki)"
+                : " (" + character.getInventory().getWeaponsSize() + " arme(s) dispo)";
+        System.out.println("[2] Changer d'arme" + weaponInfo);
+
+        String potionInfo = character.getInventory().isPotionsEmpty()
+                ? " (vide)"
+                : " (" + character.getInventory().getPotionsSize() + " dispo)";
+        System.out.println("[3] Utiliser une potion" + potionInfo);
+
+        System.out.println("[4] Fuir");
+        System.out.print("Votre choix : ");
+    }
+
+    public void displayPotionsMenu(Potion potion) {
+        System.out.println("[1] Consommer maintenant (+" + potion.getStatBonus() + " PV)");
+        System.out.println("[2] Stocker dans l'inventaire");
+        System.out.print("Votre choix : ");
+    }
+
+    public void displayWeaponReplaceMenu(Character character, OffensiveStuff newItem) {
+        System.out.println("⚠️ Inventaire armes/sorts plein !");
+        System.out.println("Que voulez-vous faire avec : " + newItem.getName() + " (PA: " + newItem.getStatBonus() + ") ?");
+        for (int i = 0; i < character.getInventory().getWeaponsSize(); i++) {
+            OffensiveStuff weapon = character.getInventory().getWeapon(i);
+            System.out.println("[" + (i + 1) + "] Remplacer : " + weapon.getName() + " (PA: " + weapon.getStatBonus() + ")");
+        }
+        System.out.println("[" + (character.getInventory().getWeaponsSize() + 1) + "] Abandonner");
+        System.out.print("Votre choix : ");
+    }
+
+    public void displayWeaponSelectMenu(Character character) {
+        System.out.println("\n🗡️  Choisissez votre arme :");
+        for (int i = 0; i < character.getInventory().getWeaponsSize(); i++) {
+            OffensiveStuff weapon = character.getInventory().getWeapon(i);
+            String active = (character.getOffensiveStuff() != null
+                    && character.getOffensiveStuff().equals(weapon)) ? " ✅" : "";
+            System.out.println("[" + (i + 1) + "] " + weapon.toString() + active);
+        }
+        System.out.println("[" + (character.getInventory().getWeaponsSize() + 1) + "] Attaquer sans changer d'arme");
         System.out.print("Votre choix : ");
     }
 
@@ -79,9 +121,6 @@ public class Menu {
         return scanner.nextLine();
     }
 
-    public void eatEnter() {
-        scanner.nextLine();
-    }
 
     @Override
     public String toString() {
