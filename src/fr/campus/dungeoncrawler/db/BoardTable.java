@@ -9,10 +9,8 @@ import fr.campus.dungeoncrawler.stuff.defensivestuff.defense.ProtectionSpell;
 import fr.campus.dungeoncrawler.stuff.defensivestuff.defense.WoodShield;
 import fr.campus.dungeoncrawler.stuff.defensivestuff.healing.BigPotion;
 import fr.campus.dungeoncrawler.stuff.defensivestuff.healing.StandardPotion;
-import fr.campus.dungeoncrawler.stuff.offensivestuff.armory.Fireball;
-import fr.campus.dungeoncrawler.stuff.offensivestuff.armory.Lightning;
-import fr.campus.dungeoncrawler.stuff.offensivestuff.armory.Mace;
-import fr.campus.dungeoncrawler.stuff.offensivestuff.armory.Sword;
+import fr.campus.dungeoncrawler.stuff.defensivestuff.healing.ThunderBolt;
+import fr.campus.dungeoncrawler.stuff.offensivestuff.armory.*;
 
 import java.sql.*;
 
@@ -222,6 +220,9 @@ public class BoardTable {
             case "BigPotion" -> new BigPotion();
             case "WoodShield" -> new WoodShield();
             case "ProtectionSpell" -> new ProtectionSpell();
+            case "Bow" -> new Bow();
+            case "Invisibility" -> new Invisibility();
+            case "ThunderStrike" -> new ThunderBolt();
             default -> {
                 System.err.println("Type d'item inconnu : " + stuffType);
                 yield null;

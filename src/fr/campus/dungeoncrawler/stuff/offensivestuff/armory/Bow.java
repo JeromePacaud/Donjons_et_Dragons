@@ -10,6 +10,5 @@ public class Bow extends Weapon {
 
     @Override
     public String toString() {
-        return "=== " + this.getName() + " ===" + " \uD83C\uDFF9 (Attaque : " + this.getStatBonus() + ")";
     }
 }

@@ -26,11 +26,11 @@ public class Inventory {
      */
     public boolean addPotion(Potion potion) {
         if (isPotionsFull()) {
-            System.out.println(">>> ⚠️ Inventaire plein ! Impossible d'ajouter " + potion.getName() + ".");
+            System.out.println("⚠️ Inventaire plein ! Impossible d'ajouter " + potion.getName() + ".");
             return false;
         }
         potions.add(potion);
-        System.out.println(">>> 💼 " + potion.getName() + " ajoutée à l'inventaire ! ("
+        System.out.println("💼 " + potion.getName() + " ajoutée à l'inventaire ! ("
                 + potions.size() + "/" + max_potions + ")");
         return true;
     }
@@ -49,13 +49,13 @@ public class Inventory {
      */
     public boolean usePotion(Character character) {
         if (isPotionsEmpty()) {
-            System.out.println(">>> ⚠️ Aucune potion dans l'inventaire !");
+            System.out.println("⚠️ Aucune potion dans l'inventaire !");
             return false;
         }
         Potion potion = potions.removeFirst();
         int newHp = Math.min(character.getLifeLevel() + potion.getStatBonus(), character.getMaxLifeLevel());
         character.setLifeLevel(newHp);
-        System.out.println(">>> 🧪 " + character.getName() + " utilise " + potion.getName()
+        System.out.println("🧪 " + character.getName() + " utilise " + potion.getName()
                 + " et récupère " + potion.getStatBonus() + " PV. (PV : "
                 + character.getLifeLevel() + "/" + character.getMaxLifeLevel() + ")");
         return true;
@@ -67,7 +67,7 @@ public class Inventory {
     public boolean addWeapon(OffensiveStuff weapon) {
         if (isWeaponsFull()) return false;
         weapons.add(weapon);
-        System.out.println(">>> ⚔️ " + weapon.getName() + " ajouté à l'inventaire ! ("
+        System.out.println("⚔️ " + weapon.getName() + " ajouté à l'inventaire ! ("
                 + weapons.size() + "/" + max_weapons + ")");
         return true;
     }
@@ -87,7 +87,7 @@ public class Inventory {
     public void replaceWeapon(int index, OffensiveStuff weapon) {
         if (index >= 0 && index < weapons.size()) {
             weapons.set(index, weapon);
-            System.out.println(">>> 🔄 " + weapon.getName() + " remplace l'ancien équipement !");
+            System.out.println("🔄 " + weapon.getName() + " remplace l'ancien équipement !");
         }
     }
 

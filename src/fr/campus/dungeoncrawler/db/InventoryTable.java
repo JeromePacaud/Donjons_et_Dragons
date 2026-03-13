@@ -5,11 +5,9 @@ import fr.campus.dungeoncrawler.inventory.Inventory;
 import fr.campus.dungeoncrawler.stuff.defensivestuff.healing.BigPotion;
 import fr.campus.dungeoncrawler.stuff.defensivestuff.healing.Potion;
 import fr.campus.dungeoncrawler.stuff.defensivestuff.healing.StandardPotion;
+import fr.campus.dungeoncrawler.stuff.defensivestuff.healing.ThunderBolt;
 import fr.campus.dungeoncrawler.stuff.offensivestuff.OffensiveStuff;
-import fr.campus.dungeoncrawler.stuff.offensivestuff.armory.Fireball;
-import fr.campus.dungeoncrawler.stuff.offensivestuff.armory.Lightning;
-import fr.campus.dungeoncrawler.stuff.offensivestuff.armory.Mace;
-import fr.campus.dungeoncrawler.stuff.offensivestuff.armory.Sword;
+import fr.campus.dungeoncrawler.stuff.offensivestuff.armory.*;
 
 import java.sql.*;
 
@@ -82,8 +80,6 @@ public class InventoryTable {
             while (rs.next()) {
                 String category  = rs.getString("category");
                 String stuffType = rs.getString("stuff_type");
-                String name = rs.getString("name");
-                int statBonus = rs.getInt("stat_bonus");
 
                 if (category.equals("potion")) {
                     Potion potion = buildPotion(stuffType);
@@ -113,6 +109,7 @@ public class InventoryTable {
         return switch (stuffType) {
             case "StandardPotion" -> new StandardPotion();
             case "BigPotion" -> new BigPotion();
+            case "ThunderStrike" -> new ThunderBolt();
             default -> {
                 System.err.println("Type de potion inconnu : " + stuffType);
                 yield null;
@@ -126,6 +123,8 @@ public class InventoryTable {
             case "Mace" -> new Mace();
             case "Lightning" -> new Lightning();
             case "Fireball" -> new Fireball();
+            case "Bow" -> new Bow();
+            case "Invisibility" -> new Invisibility();
             default -> {
                 System.err.println("Type d'arme inconnu : " + stuffType);
                 yield null;
