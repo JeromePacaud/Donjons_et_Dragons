@@ -8,10 +8,7 @@ import fr.campus.dungeoncrawler.stuff.defensivestuff.defense.WoodShield;
 import fr.campus.dungeoncrawler.stuff.offensivestuff.OffensiveStuff;
 import fr.campus.dungeoncrawler.stuff.Stuff;
 import fr.campus.dungeoncrawler.stuff.defensivestuff.defense.ProtectionSpell;
-import fr.campus.dungeoncrawler.stuff.offensivestuff.armory.Fireball;
-import fr.campus.dungeoncrawler.stuff.offensivestuff.armory.Lightning;
-import fr.campus.dungeoncrawler.stuff.offensivestuff.armory.Mace;
-import fr.campus.dungeoncrawler.stuff.offensivestuff.armory.Sword;
+import fr.campus.dungeoncrawler.stuff.offensivestuff.armory.*;
 
 import java.rmi.ServerError;
 import java.sql.*;
@@ -227,6 +224,8 @@ public class CharacterTable {
             case "Fireball" -> new Fireball();
             case "WoodShield" -> new WoodShield();
             case "ProtectionSpell" -> new ProtectionSpell();
+            case "Bow" -> new Bow();
+            case "Invisibility" -> new Invisibility();
             default -> {
                 System.err.println("Type d'équipement inconnu : " + type);
                 yield null;

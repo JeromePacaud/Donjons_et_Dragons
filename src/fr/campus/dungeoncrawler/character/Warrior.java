@@ -13,33 +13,25 @@ public class Warrior extends Character {
     }
 
     @Override
-    public String getSpecialStatLabel() {
-        return "PA";
-    }
+    public String getSpecialStatLabel() { return "PA"; }
 
     @Override
-    public String getCharacterImage() {
-        return "\uD83E\uDD34\uD83C\uDFFB";
-    }
+    public String getCharacterImage() { return "\uD83E\uDD34\uD83C\uDFFB"; }
 
     @Override
-    public int getBaseAttackLevel() {
-        return 5;
-    }
+    public int getBaseAttackLevel() { return 5; }
 
     @Override
-    public int getBaseLifeLevel() {
-        return 10;
-    }
+    public int getBaseLifeLevel() { return 10; }
 
     @Override
     public int getMaxLifeLevel() { return 15; }
 
     @Override
     public boolean canEquip(Stuff stuff) {
-        return stuff instanceof Weapon
-            || stuff instanceof Potion
-            || stuff instanceof Shield;
+        return stuff instanceof Weapon  // inclut Bow et Sword et Mace car Bow extends Weapon
+                || stuff instanceof Potion
+                || stuff instanceof Shield;
     }
 
     @Override

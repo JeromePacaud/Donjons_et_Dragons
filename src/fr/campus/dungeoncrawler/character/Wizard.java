@@ -13,33 +13,25 @@ public class Wizard extends Character {
     }
 
     @Override
-    public String getSpecialStatLabel() {
-        return "Mana";
-    }
+    public String getSpecialStatLabel() { return "Mana"; }
 
     @Override
-    public String getCharacterImage() {
-        return "\uD83E\uDDD9\u200D♂\uFE0F";
-    }
+    public String getCharacterImage() { return "\uD83E\uDDD9\u200D♂\uFE0F"; }
 
     @Override
-    public int getBaseAttackLevel() {
-        return 8;
-    }
+    public int getBaseAttackLevel() { return 8; }
 
     @Override
-    public int getBaseLifeLevel() {
-        return 6;
-    }
+    public int getBaseLifeLevel() { return 6; }
 
     @Override
     public int getMaxLifeLevel() { return 12; }
 
     @Override
     public boolean canEquip(Stuff stuff) {
-        return stuff instanceof Spell
-            || stuff instanceof ProtectionSpell
-            || stuff instanceof Potion;
+        return stuff instanceof Spell  // inclut Invisibility car Invisibility extends Spell
+                || stuff instanceof ProtectionSpell
+                || stuff instanceof Potion;
     }
 
     @Override
