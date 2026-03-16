@@ -4,9 +4,9 @@ import fr.campus.dungeoncrawler.character.enemy.Dragon;
 import fr.campus.dungeoncrawler.character.enemy.Enemy;
 import fr.campus.dungeoncrawler.stuff.offensivestuff.Weapon;
 
-/**
- * Arc, spécifique au Guerrier.
- * Inflige 10 points de dégâts contre les Dragons (4 + 6), 4 contre les autres ennemis.
+/*
+ * Classe représentant une arme de type arc.
+ * L'arc inflige des dégâts de base, avec un bonus supplémentaire contre les dragons.
  */
 public class Bow extends Weapon {
 

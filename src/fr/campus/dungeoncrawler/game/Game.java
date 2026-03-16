@@ -13,6 +13,10 @@ import fr.campus.dungeoncrawler.dice.SixSidedDice;
 import fr.campus.dungeoncrawler.exceptions.OutOfBoardException;
 import fr.campus.dungeoncrawler.menu.Menu;
 
+/**
+ * Classe principale du jeu, gère le déroulement de la partie, les interactions
+ * entre les différentes classes et la communication avec la base de données.
+ */
 public class Game {
 
     private SQLDatabaseConnection db;
@@ -25,6 +29,11 @@ public class Game {
     private Menu menu;
     private boolean running;
 
+    /**
+     * Constructeur de la classe Game.
+     * Initialise les composants du jeu, établit la connexion à la base de données
+     * et crée les tables nécessaires si elles n'existent pas déjà.
+     */
     public Game() {
         this.board = new Board(90);
         this.dice = new SixSidedDice();
@@ -44,6 +53,20 @@ public class Game {
         this.inventoryTable.createInventoryTable();
     }
 
+    public Character getCharacter() { return this.character; }
+    public void setCharacter(Character c) { this.character = c; }
+    public Board getBoard() { return this.board; }
+    public void setBoard(Board b) { this.board = b; }
+    public SixSidedDice getDice() { return this.dice; }
+    public void setDice(SixSidedDice d) { this.dice = d; }
+    public Menu getMenu() { return this.menu; }
+    public void setMenu(Menu m) { this.menu = m; }
+
+    /**
+     * Méthode principale pour démarrer le jeu.
+     * Affiche le menu principal et gère les choix de l'utilisateur pour créer,
+     * charger ou supprimer un personnage, ou quitter le jeu.
+     */
     public void start() {
         while (running) {
             this.menu.displayMainMenu();
@@ -98,6 +121,12 @@ public class Game {
         }
     }
 
+    /**
+     * Méthode pour créer un nouveau personnage.
+     * Affiche le menu de sélection de type de personnage, lit le nom du joueur
+     * et crée une instance de Warrior ou Wizard en fonction du choix.
+     * Le personnage est ensuite sauvegardé dans la base de données.
+     */
     private void createCharacter() {
         this.menu.displayTypeMenu();
         int typeChoice = this.menu.readInt();
@@ -114,6 +143,11 @@ public class Game {
         this.menu.displayMessage("Personnage créé : " + this.character.getName() + " !");
     }
 
+    /**
+     * Menu de gestion du personnage après sa création ou son chargement.
+     * Permet au joueur de voir les stats de son personnage, de modifier son nom,
+     * de commencer une partie ou de quitter le jeu.
+     */
     private void characterMenu() {
         boolean inCharacterMenu = true;
 
@@ -150,6 +184,12 @@ public class Game {
         }
     }
 
+    /**
+     * Méthode principale pour jouer une partie.
+     * Charge le plateau de jeu depuis la base de données s'il existe, sinon en crée un nouveau.
+     * Gère le déroulement de la partie, les interactions avec les tuiles, les déplacements du personnage,
+     * et les conditions de fin de partie (victoire ou défaite).
+     */
     private void playGame() {
         Board savedBoard = this.boardTable.loadBoard(this.character);
 
@@ -212,6 +252,11 @@ public class Game {
         endGameMenu();
     }
 
+    /**
+     * Méthode pour sauvegarder la partie en cours et quitter le jeu.
+     * Met à jour les données du personnage, de l'inventaire et du plateau dans la base de données,
+     * affiche un message de confirmation, puis ferme la connexion à la base de données.
+     */
     private void saveAndQuit() {
         this.menu.displayMessage("Sauvegarde en cours...");
         this.playerTable.updateCharacter(character);
@@ -223,6 +268,10 @@ public class Game {
         this.db.closeConnection();
     }
 
+    /**
+     * Applique les effets de la tuile sur laquelle le personnage se trouve.
+     * Gère les interactions avec les tuiles ennemies et les coffres, et met à jour le plateau en conséquence.
+     */
     private void applyTileEffect(Tile tile) {
         tile.interact(this.character);
 
@@ -235,14 +284,16 @@ public class Game {
         }
     }
 
+    /**
+     * Affiche les statistiques actuelles du personnage.
+     */
     private void displayCharacterStats() {
         System.out.println(this.character.toString());
     }
 
     /**
-     * Menu de fin de partie.
-     * Si le joueur recommence, le plateau est régénéré et les marchands/auberges
-     * sont replacés aléatoirement — l'or est remis à 0 via character.reset().
+     * Affiche le menu de fin de partie, permettant au joueur de choisir entre recommencer une nouvelle partie
+     * ou quitter le jeu. En cas de nouvelle partie, le plateau est régénéré et les données du personnage sont réinitialisées.
      */
     private void endGameMenu() {
         menu.displayEndGameMenu();
@@ -260,15 +311,6 @@ public class Game {
             db.closeConnection();
         }
     }
-
-    public Character getCharacter()             { return this.character; }
-    public void setCharacter(Character c)       { this.character = c; }
-    public Board getBoard()                     { return this.board; }
-    public void setBoard(Board b)               { this.board = b; }
-    public SixSidedDice getDice()               { return this.dice; }
-    public void setDice(SixSidedDice d)         { this.dice = d; }
-    public Menu getMenu()                       { return this.menu; }
-    public void setMenu(Menu m)                 { this.menu = m; }
 
     @Override
     public String toString() {

@@ -7,10 +7,6 @@ import fr.campus.dungeoncrawler.character.Character;
  * Chaque tuile a un type et une image associée, et permet au personnage d'interagir avec elle.
  */
 public abstract class Tile {
-    /*
-    * TODO : Ajouter une propriété static pour stocker les images des tuiles,
-    *        afin d'éviter de les charger à chaque fois que la méthode getTileImage est appelée.
-    */
 
     private String type;
 

@@ -1,0 +1,17 @@
+fr.campus.dungeoncrawler
+fr.campus.dungeoncrawler.board
+fr.campus.dungeoncrawler.board.tile
+fr.campus.dungeoncrawler.character
+fr.campus.dungeoncrawler.character.enemy
+fr.campus.dungeoncrawler.db
+fr.campus.dungeoncrawler.dice
+fr.campus.dungeoncrawler.exceptions
+fr.campus.dungeoncrawler.game
+fr.campus.dungeoncrawler.inventory
+fr.campus.dungeoncrawler.menu
+fr.campus.dungeoncrawler.stuff
+fr.campus.dungeoncrawler.stuff.defensivestuff
+fr.campus.dungeoncrawler.stuff.defensivestuff.defense
+fr.campus.dungeoncrawler.stuff.defensivestuff.healing
+fr.campus.dungeoncrawler.stuff.offensivestuff
+fr.campus.dungeoncrawler.stuff.offensivestuff.armory

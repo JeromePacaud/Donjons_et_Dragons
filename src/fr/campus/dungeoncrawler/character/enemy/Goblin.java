@@ -2,6 +2,10 @@ package fr.campus.dungeoncrawler.character.enemy;
 
 import fr.campus.dungeoncrawler.character.Character;
 
+/**
+ * Class representing the Goblin enemy in the Dungeon Crawler game.
+ * This class extends the Enemy class and provides specific attributes and behaviors for the Goblin.
+ */
 public class Goblin extends Enemy{
     public Goblin() {
         super("Goblin", "Goblin");

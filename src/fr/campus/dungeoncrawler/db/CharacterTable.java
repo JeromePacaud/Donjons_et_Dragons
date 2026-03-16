@@ -11,12 +11,20 @@ import fr.campus.dungeoncrawler.stuff.offensivestuff.armory.*;
 
 import java.sql.*;
 
+/**
+ * Classe de gestion de la table "characters" et de la table "equipments" associée.
+ * Permet de créer les tables, d'insérer, mettre à jour, supprimer et charger des personnages avec leurs équipements.
+ */
 public class CharacterTable {
 
     private Connection connection;
 
     public CharacterTable(Connection connection) { this.connection = connection; }
 
+    /**
+     * Crée la table "characters" si elle n'existe pas déjà.
+     * La table contient les colonnes : id, type, name, life_level, damage, defense, position et gold.
+     */
     public void createCharacterTable() {
         String sql = "CREATE TABLE IF NOT EXISTS characters ("
                 + "id INT AUTO_INCREMENT PRIMARY KEY NOT NULL,"
@@ -36,6 +44,11 @@ public class CharacterTable {
         }
     }
 
+    /**
+     * Crée la table "equipments" si elle n'existe pas déjà.
+     * La table contient les colonnes : id, character_id, slot, type, name et stat_bonus.
+     * La colonne character_id est une clé étrangère référencant l'id de la table characters.
+     */
     public void createEquipmentTable() {
         String sql = "CREATE TABLE IF NOT EXISTS equipments ("
                 + "id INT AUTO_INCREMENT PRIMARY KEY NOT NULL,"
@@ -54,6 +67,11 @@ public class CharacterTable {
         }
     }
 
+    /**
+     * Insère un personnage dans la table "characters" et récupère son id généré.
+     *
+     * @param character Le personnage à insérer.
+     */
     public void insertCharacter(Character character) {
         String sql = "INSERT INTO characters (type, name, life_level, damage, defense, position, gold) VALUES (?, ?, ?, ?, ?, ?, ?)";
         try (PreparedStatement stmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
@@ -66,6 +84,13 @@ public class CharacterTable {
         }
     }
 
+    /**
+     * Prépare la requête d'insertion ou de mise à jour avec les attributs du personnage.
+     *
+     * @param character Le personnage dont les attributs sont à utiliser.
+     * @param stmt La requête préparée à remplir.
+     * @throws SQLException Si une erreur SQL survient lors de la préparation de la requête.
+     */
     private void setStatement(Character character, PreparedStatement stmt) throws SQLException {
         stmt.setString(1, character.getType());
         stmt.setString(2, character.getName());
@@ -76,6 +101,11 @@ public class CharacterTable {
         stmt.setInt(7, character.getGold());
     }
 
+    /**
+     * Met à jour les informations d'un personnage existant dans la table "characters".
+     *
+     * @param character Le personnage à mettre à jour. Son id doit être défini pour identifier la ligne à modifier.
+     */
     public void updateCharacter(Character character) {
         String sql = "UPDATE characters SET type = ?, name = ?, life_level = ?, damage = ?, defense = ?, position = ?, gold = ? WHERE id = ?";
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
@@ -88,6 +118,11 @@ public class CharacterTable {
         }
     }
 
+    /**
+     * Supprime un personnage de la table "characters". Les équipements associés seront automatiquement supprimés grâce à la contrainte de clé étrangère.
+     *
+     * @param character Le personnage à supprimer. Son id doit être défini pour identifier la ligne à supprimer.
+     */
     public void deleteCharacter(Character character) {
         String sql = "DELETE FROM characters WHERE id = ?";
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
@@ -99,6 +134,12 @@ public class CharacterTable {
         }
     }
 
+    /**
+     * Charge un personnage depuis la table "characters" en fonction de son id, ainsi que ses équipements associés.
+     *
+     * @param id L'id du personnage à charger.
+     * @return Le personnage chargé avec ses équipements, ou null si aucun personnage n'a été trouvé avec cet id.
+     */
     public Character loadCharacter(int id) {
         String sql = "SELECT * FROM characters WHERE id = ?";
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
@@ -127,6 +168,10 @@ public class CharacterTable {
         return null;
     }
 
+    /**
+     * Affiche tous les personnages présents dans la table "characters" avec leurs informations de base.
+     * Les équipements ne sont pas affichés dans cette méthode, seulement les attributs principaux du personnage.
+     */
     public void fetchAllCharacters() {
         String sql = "SELECT * FROM characters";
         try (Statement stmt = connection.createStatement()) {
@@ -147,6 +192,12 @@ public class CharacterTable {
         }
     }
 
+    /**
+     * Sauvegarde les équipements d'un personnage dans la table "equipments". Les équipements existants pour ce personnage
+     * sont d'abord supprimés avant d'insérer les nouveaux.
+     *
+     * @param character Le personnage dont les équipements sont à sauvegarder. Son id doit être défini pour identifier les lignes à supprimer et à insérer.
+     */
     public void saveEquipments(Character character) {
         deleteEquipments(character);
         String sql = "INSERT INTO equipments (character_id, slot, type, name, stat_bonus) VALUES (?, ?, ?, ?, ?)";
@@ -174,6 +225,12 @@ public class CharacterTable {
         }
     }
 
+    /**
+     * Charge les équipements d'un personnage depuis la table "equipments" en fonction de son id.
+     * Les équipements sont associés au personnage en fonction de leur slot (offensive ou defensive).
+     *
+     * @param character Le personnage pour lequel les équipements doivent être chargés. Son id doit être défini pour identifier les lignes à charger.
+     */
     public void loadEquipments(Character character) {
         String sql = "SELECT * FROM equipments WHERE character_id = ?";
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
@@ -195,6 +252,11 @@ public class CharacterTable {
         }
     }
 
+    /**
+     * Supprime tous les équipements associés à un personnage de la table "equipments" en fonction de son id.
+     *
+     * @param character Le personnage pour lequel les équipements doivent être supprimés. Son id doit être défini pour identifier les lignes à supprimer.
+     */
     private void deleteEquipments(Character character) {
         String sql = "DELETE FROM equipments WHERE character_id = ?";
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
@@ -205,6 +267,13 @@ public class CharacterTable {
         }
     }
 
+    /**
+     * Construit un objet Stuff à partir de son type sous forme de chaîne de caractères.
+     * Cette méthode utilise un switch pour déterminer quelle classe de Stuff instancier en fonction du type fourni.
+     *
+     * @param type Le type de Stuff à construire, correspondant au nom de la classe (ex: "Sword", "Fireball", etc.).
+     * @return Un objet Stuff correspondant au type fourni, ou null si le type est inconnu.
+     */
     private Stuff buildStuff(String type) {
         return switch (type) {
             case "Sword" -> new Sword();
@@ -222,6 +291,11 @@ public class CharacterTable {
         };
     }
 
+    /**
+     * Vérifie si la table "characters" est vide en essayant de récupérer une ligne.
+     *
+     * @return true si la table est vide, false sinon ou en cas d'erreur.
+     */
     public boolean isEmpty() {
         String sql = "SELECT 1 FROM characters LIMIT 1";
         try (PreparedStatement stmt = connection.prepareStatement(sql);
@@ -233,6 +307,10 @@ public class CharacterTable {
         return false;
     }
 
+    /**
+     * Méthode de test pour supprimer les tables "characters" et "equipments" de la base de données.
+     * Utile pour réinitialiser la base de données pendant le développement.
+     */
     public static void main(String[] args) {
         SQLDatabaseConnection db = new SQLDatabaseConnection();
         db.getConnection();

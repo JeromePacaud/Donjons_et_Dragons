@@ -20,6 +20,12 @@ public class InnTile extends Tile {
     @Override
     public String getTileImage() { return "🏠"; }
 
+    /**
+     * Permet au joueur de se reposer et de restaurer tous ses PV contre un coût fixe en or.
+     * Affiche les options disponibles et gère le choix du joueur.
+     *
+     * @param character Le personnage qui interagit avec l'auberge.
+     */
     @Override
     public void interact(Character character) {
         System.out.println("\n>>> 🏠 Une auberge ! Bienvenue voyageur !");

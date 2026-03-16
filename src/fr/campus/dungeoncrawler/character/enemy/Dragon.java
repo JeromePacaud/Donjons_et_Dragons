@@ -2,6 +2,10 @@ package fr.campus.dungeoncrawler.character.enemy;
 
 import fr.campus.dungeoncrawler.character.Character;
 
+/**
+ * Class representing a Dragon enemy in the dungeon crawler game.
+ * The Dragon has specific attributes such as attack level, life level, and can attack any character.
+ */
 public class Dragon extends Enemy{
     public Dragon() {
         super("Dragon", "Dragon");

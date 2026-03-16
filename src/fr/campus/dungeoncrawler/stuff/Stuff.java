@@ -12,17 +12,10 @@ public abstract class Stuff {
         this.type = type;
     }
 
-    /**
-     * Retourne le bonus de statistique apporté par l'équipement.
-     * Chaque sous-classe définit ce que cela signifie (attaque, défense, soin, etc.).
-     */
     public abstract int getStatBonus();
 
     public abstract void equip(Character character);
 
-    /**
-     * Retourne une description textuelle du type de bonus (ex: "Attaque", "Défense").
-     */
     public abstract String getBonusLabel();
 
     public String getName() { return name; }

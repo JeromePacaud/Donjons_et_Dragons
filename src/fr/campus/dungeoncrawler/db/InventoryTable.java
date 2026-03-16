@@ -11,14 +11,61 @@ import fr.campus.dungeoncrawler.stuff.offensivestuff.armory.*;
 
 import java.sql.*;
 
+/**
+ * Classe responsable de la gestion de la table "inventory" dans la base de données du jeu Dungeon Crawler.
+ * <p>
+ * Gère les opérations CRUD (Create, Read, Update, Delete) pour l'inventaire des personnages.
+ * Chaque entrée dans la table représente un objet (potion ou arme) appartenant à un personnage spécifique.
+ * </p>
+ *
+ * <h2>Structure de la table "inventory"</h2>
+ * <ul>
+ *   <li><strong>id</strong> : identifiant unique de l'entrée (auto-incrémenté)</li>
+ *   <li><strong>character_id</strong> : référence à l'identifiant du personnage auquel appartient l'objet</li>
+ *   <li><strong>category</strong> : catégorie de l'objet ("potion" ou "weapon")</li>
+ *   <li><strong>stuff_type</strong> : type spécifique de l'objet (ex: "StandardPotion", "Sword")</li>
+ *   <li><strong>name</strong> : nom de l'objet</li>
+ *   <li><strong>stat_bonus</strong> : bonus de statistiques que l'objet confère au personnage</li>
+ * </ul>
+ *
+ * <h2>Fonctionnalités</h2>
+ * <ul>
+ *   <li>{@link #createInventoryTable()} : crée la table "inventory" si elle n'existe pas déjà</li>
+ *   <li>{@link #saveInventory(Character)} : sauvegarde l'inventaire d'un personnage dans la base de données</li>
+ *   <li>{@link #loadInventory(Character)} : charge l'inventaire d'un personnage depuis la base de données</li>
+ *   <li>{@link #deleteInventory(Character)} : supprime tous les objets liés à un personnage dans la base de données</li>
+ * </ul>
+ */
 public class InventoryTable {
 
     private Connection connection;
 
+    /**
+     * Constructeur de la classe InventoryTable, initialisant la connexion à la base de données.
+     *
+     * @param connection La connexion à la base de données utilisée pour exécuter les opérations sur la table "inventory"
+     */
     public InventoryTable(Connection connection) {
         this.connection = connection;
     }
 
+    /**
+     * Crée la table "inventory" dans la base de données si elle n'existe pas déjà.
+     * <p>
+     * La table contient les colonnes suivantes :
+     * </p>
+     * <ul>
+     *   <li><strong>id</strong> : identifiant unique de l'entrée (auto-incrémenté)</li>
+     *   <li><strong>character_id</strong> : référence à l'identifiant du personnage auquel appartient l'objet</li>
+     *   <li><strong>category</strong> : catégorie de l'objet ("potion" ou "weapon")</li>
+     *   <li><strong>stuff_type</strong> : type spécifique de l'objet (ex: "StandardPotion", "Sword")</li>
+     *   <li><strong>name</strong> : nom de l'objet</li>
+     *   <li><strong>stat_bonus</strong> : bonus de statistiques que l'objet confère au personnage</li>
+     * </ul>
+     * <p>
+     * La colonne character_id est une clé étrangère qui référence la table "characters" et est configurée pour supprimer en cascade les entrées liées lorsque le personnage est supprimé.
+     * </p>
+     */
     public void createInventoryTable() {
 
         String sql = "CREATE TABLE IF NOT EXISTS inventory ("
@@ -37,6 +84,15 @@ public class InventoryTable {
         }
     }
 
+    /**
+     * Sauvegarde l'inventaire d'un personnage dans la base de données.
+     * <p>
+     * Cette méthode supprime d'abord les entrées existantes pour le personnage afin d'éviter les doublons, puis insère les potions et armes actuelles de l'inventaire.
+     * Si l'inventaire est vide (pas de potions ni d'armes), aucune entrée n'est créée.
+     * </p>
+     *
+     * @param character Le personnage dont l'inventaire doit être sauvegardé
+     */
     public void saveInventory(Character character) {
         deleteInventory(character);
 
@@ -70,6 +126,15 @@ public class InventoryTable {
         }
     }
 
+    /**
+     * Charge l'inventaire d'un personnage depuis la base de données.
+     * <p>
+     * Cette méthode récupère toutes les entrées de la table "inventory" associées au personnage, reconstruit les objets correspondants (potions et armes) et les ajoute à l'inventaire du personnage.
+     * Si aucune entrée n'est trouvée, l'inventaire du personnage restera vide.
+     * </p>
+     *
+     * @param character Le personnage dont l'inventaire doit être chargé
+     */
     public void loadInventory(Character character) {
         String sql = "SELECT * FROM inventory WHERE character_id = ?";
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
@@ -95,6 +160,14 @@ public class InventoryTable {
         }
     }
 
+    /**
+     * Supprime tous les objets de l'inventaire d'un personnage dans la base de données.
+     * <p>
+     * Cette méthode est utilisée avant de sauvegarder un nouvel inventaire pour éviter les doublons. Elle supprime toutes les entrées de la table "inventory" associées au personnage spécifié.
+     * </p>
+     *
+     * @param character Le personnage dont l'inventaire doit être supprimé
+     */
     public void deleteInventory(Character character) {
         String sql = "DELETE FROM inventory WHERE character_id = ?";
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
@@ -105,6 +178,16 @@ public class InventoryTable {
         }
     }
 
+    /**
+     * Méthode utilitaire pour construire une instance de Potion à partir du type de potion stocké dans la base de données.
+     * <p>
+     * Cette méthode utilise une instruction switch pour déterminer quel type de potion créer en fonction du nom de la classe (ex: "StandardPotion", "BigPotion", "Thunderbolt").
+     * Si le type de potion n'est pas reconnu, un message d'erreur est affiché et la méthode retourne null.
+     * </p>
+     *
+     * @param stuffType Le nom de la classe de potion à construire
+     * @return Une instance de Potion correspondant au type spécifié, ou null si le type est inconnu
+     */
     private Potion buildPotion(String stuffType) {
         return switch (stuffType) {
             case "StandardPotion" -> new StandardPotion();
@@ -117,6 +200,16 @@ public class InventoryTable {
         };
     }
 
+    /**
+     * Méthode utilitaire pour construire une instance de OffensiveStuff à partir du type d'arme stocké dans la base de données.
+     * <p>
+     * Cette méthode utilise une instruction switch pour déterminer quel type d'arme ou sort offensif créer en fonction du nom de la classe (ex: "Sword", "Fireball").
+     * Si le type d'arme n'est pas reconnu, un message d'erreur est affiché et la méthode retourne null.
+     * </p>
+     *
+     * @param stuffType Le nom de la classe d'arme à construire
+     * @return Une instance de OffensiveStuff correspondant au type spécifié, ou null si le type est inconnu
+     */
     private OffensiveStuff buildWeapon(String stuffType) {
         return switch (stuffType) {
             case "Sword" -> new Sword();

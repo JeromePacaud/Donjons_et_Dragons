@@ -4,6 +4,10 @@ import fr.campus.dungeoncrawler.character.Character;
 import fr.campus.dungeoncrawler.character.enemy.Enemy;
 import fr.campus.dungeoncrawler.stuff.Stuff;
 
+/**
+ * Classe abstraite représentant les objets offensifs (armes, sorts, etc.)
+ * Ces objets augmentent la capacité d'attaque du personnage.
+ */
 public abstract class OffensiveStuff extends Stuff {
 
     private int damage;
@@ -13,11 +17,8 @@ public abstract class OffensiveStuff extends Stuff {
         this.damage = damage;
     }
 
-    /**
-     * Retourne les dégâts infligés à un ennemi donné.
-     * Par défaut retourne le statBonus standard.
-     * Les sous-classes peuvent surcharger cette méthode pour des bonus spéciaux (Arc vs Dragon, etc.)
-     */
+    public int getAttackLevel()          { return damage; }
+    public void setAttackLevel(int dmg)  { this.damage = dmg; }
     public int getDamageAgainst(Enemy enemy) {
         return this.getStatBonus();
     }
@@ -33,7 +34,4 @@ public abstract class OffensiveStuff extends Stuff {
         character.setOffensiveStuff(this);
         character.setAttackLevel(character.getAttackLevel() + getStatBonus());
     }
-
-    public int getAttackLevel()          { return damage; }
-    public void setAttackLevel(int dmg)  { this.damage = dmg; }
 }

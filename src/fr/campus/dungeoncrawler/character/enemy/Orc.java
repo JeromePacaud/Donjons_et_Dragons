@@ -3,6 +3,10 @@ package fr.campus.dungeoncrawler.character.enemy;
 import fr.campus.dungeoncrawler.character.Character;
 import fr.campus.dungeoncrawler.character.Warrior;
 
+/**
+ * Class representing the Orc enemy in the Dungeon Crawler game.
+ * This class extends the Enemy class and provides specific attributes and behaviors for the Orc.
+ */
 public class Orc extends Enemy{
 
     public Orc() {

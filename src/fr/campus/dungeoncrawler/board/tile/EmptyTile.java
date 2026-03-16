@@ -3,14 +3,13 @@ package fr.campus.dungeoncrawler.board.tile;
 import fr.campus.dungeoncrawler.character.Character;
 
 /**
- * Représente une case vide sur le plateau de jeu.
- * Cette classe hérite de Tile et implémente les méthodes spécifiques à une case vide.
+ * Représente une tuile vide dans le donjon. Cette tuile n'a aucune interaction particulière avec le personnage.
+ * Lorsqu'un personnage interagit avec une tuile vide, un message est affiché pour indiquer que rien ne se passe.
  */
 public class EmptyTile extends Tile {
 
     /**
-     * Constructeur de la classe EmptyTile.
-     * Initialise le nom de la case à "Empty".
+     * Constructeur de la tuile vide. Cette tuile est identifiée par le nom "Empty".
      */
     public EmptyTile() {
         super("Empty");

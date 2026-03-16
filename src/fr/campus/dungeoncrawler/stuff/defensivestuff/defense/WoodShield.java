@@ -1,7 +1,9 @@
 package fr.campus.dungeoncrawler.stuff.defensivestuff.defense;
 
-import fr.campus.dungeoncrawler.stuff.defensivestuff.healing.Potion;
-
+/**
+ * Bouclier en bois — équipement défensif de base pour le Guerrier.
+ * Offre une résistance de 1 point contre les attaques ennemies.
+ */
 public class WoodShield extends Shield {
     public WoodShield() {
         super("Bouclier en bois", "Bouclier", 1);

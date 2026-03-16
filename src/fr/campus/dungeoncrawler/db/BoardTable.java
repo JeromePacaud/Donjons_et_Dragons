@@ -15,7 +15,8 @@ import fr.campus.dungeoncrawler.stuff.offensivestuff.armory.*;
 import java.sql.*;
 
 /**
- * DAO pour les opérations CRUD sur le plateau et ses cases.
+ * Gère la table "boards" et "board_tiles" pour sauvegarder et charger les plateaux de jeu.
+ * Chaque plateau est lié à un personnage, et chaque case du plateau est stockée avec ses détails.
  */
 public class BoardTable {
 
@@ -25,6 +26,10 @@ public class BoardTable {
         this.connection = connection;
     }
 
+    /**
+     * Crée la table "boards" si elle n'existe pas déjà.
+     * La table contient une référence au personnage et la taille du plateau.
+     */
     public void createBoardTable() {
         String sql = "CREATE TABLE IF NOT EXISTS boards ("
                 + "id INT AUTO_INCREMENT PRIMARY KEY NOT NULL,"
@@ -40,6 +45,11 @@ public class BoardTable {
         }
     }
 
+    /**
+     * Crée la table "board_tiles" si elle n'existe pas déjà.
+     * Chaque ligne représente une case d'un plateau, avec des détails sur le type de case, les ennemis, les récompenses, etc.
+     * La table est liée à la table "boards" via une clé étrangère.
+     */
     public void createBoardTilesTable() {
         String sql = "CREATE TABLE IF NOT EXISTS board_tiles ("
                 + "id INT AUTO_INCREMENT PRIMARY KEY NOT NULL,"
@@ -60,6 +70,13 @@ public class BoardTable {
         }
     }
 
+    /**
+     * Sauvegarde le plateau d'un personnage dans la base de données.
+     * Si un plateau existe déjà pour ce personnage, il est supprimé avant d'enregistrer le nouveau.
+     * Chaque case du plateau est également enregistrée dans la table "board_tiles" avec ses détails.
+     *
+     * @param board Le plateau à sauvegarder
+     */
     public void saveBoard(Board board, Character character) {
         deleteBoardByCharacter(character);
 
@@ -80,6 +97,13 @@ public class BoardTable {
         }
     }
 
+    /**
+     * Sauvegarde les cases d'un plateau dans la table "board_tiles".
+     * Chaque case est enregistrée avec son type, les détails de l'ennemi (si c'est une case ennemie), les détails de la récompense (si c'est une case coffre), etc.
+     *
+     * @param board Le plateau dont les cases doivent être sauvegardées
+     * @param boardId L'identifiant du plateau dans la table "boards" pour lier les cases à ce plateau
+     */
     private void saveBoardTiles(Board board, int boardId) {
         String sql = "INSERT INTO board_tiles (board_id, position, tile_type, enemy_type, enemy_hp, stuff_type, is_opened) "
                 + "VALUES (?, ?, ?, ?, ?, ?, ?)";
@@ -115,6 +139,13 @@ public class BoardTable {
         }
     }
 
+    /**
+     * Charge le plateau d'un personnage depuis la base de données.
+     * Récupère d'abord les informations du plateau (taille, etc.) puis charge chaque case avec ses détails.
+     *
+     * @param character Le personnage dont le plateau doit être chargé
+     * @return Le plateau chargé, ou null si aucun plateau n'est trouvé pour ce personnage
+     */
     public Board loadBoard(Character character) {
         String sql = "SELECT * FROM boards WHERE character_id = ?";
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
@@ -132,6 +163,14 @@ public class BoardTable {
         return null;
     }
 
+    /**
+     * Charge les cases d'un plateau depuis la table "board_tiles" en fonction de l'identifiant du plateau.
+     * Chaque case est reconstruite avec ses détails (type de case, ennemi, récompense, etc.) pour recréer le plateau complet.
+     *
+     * @param boardId L'identifiant du plateau dans la table "boards"
+     * @param size La taille du plateau pour initialiser l'objet Board
+     * @return Le plateau avec toutes ses cases chargées
+     */
     private Board loadBoardTiles(int boardId, int size) {
         Board board = new Board(size);
         String sql = "SELECT * FROM board_tiles WHERE board_id = ? ORDER BY position";
@@ -154,6 +193,15 @@ public class BoardTable {
         return board;
     }
 
+    /**
+     * Construit une case (Tile) à partir des informations récupérées de la base de données.
+     * En fonction du type de case, les détails supplémentaires (ennemi, récompense, etc.) sont utilisés pour créer l'objet Tile approprié.
+     *
+     * @param tileType Le type de la case (Start, End, Enemy, Chest, etc.)
+     * @param rs Le ResultSet contenant les détails de la case pour construire l'objet Tile
+     * @return L'objet Tile construit à partir des données, ou une EmptyTile si les données sont invalides
+     * @throws SQLException Si une erreur survient lors de la lecture des données du ResultSet
+     */
     private Tile buildTile(String tileType, ResultSet rs) throws SQLException {
         switch (tileType) {
             case "Start": return new StartTile();
@@ -179,6 +227,14 @@ public class BoardTable {
         }
     }
 
+    /**
+     * Construit une case ennemie (EnemyTile) à partir du type d'ennemi et de ses points de vie.
+     * En fonction du type d'ennemi, l'objet Enemy approprié est créé et encapsulé dans une EnemyTile.
+     *
+     * @param enemyType Le type de l'ennemi (Dragon, Sorcerer, Goblin, etc.)
+     * @param enemyHp Les points de vie de l'ennemi pour initialiser son niveau de vie
+     * @return Une EnemyTile contenant l'ennemi construit à partir des données, ou null si le type d'ennemi est inconnu
+     */
     private EnemyTile buildEnemyTile(String enemyType, int enemyHp) {
         switch (enemyType) {
             case "Dragon": {
@@ -210,6 +266,13 @@ public class BoardTable {
         }
     }
 
+    /**
+     * Construit un objet Stuff à partir du type de stuff récupéré de la base de données.
+     * En fonction du type de stuff, l'objet Stuff approprié est créé pour être utilisé comme récompense dans une case coffre.
+     *
+     * @param stuffType Le type de stuff (Sword, Mace, Lightning, Fireball, StandardPotion, BigPotion, WoodShield, ProtectionSpell, Bow, Invisibility, Thunderbolt)
+     * @return L'objet Stuff construit à partir du type, ou null si le type de stuff est inconnu
+     */
     private Stuff buildStuff(String stuffType) {
         return switch (stuffType) {
             case "Sword" -> new Sword();
@@ -230,6 +293,12 @@ public class BoardTable {
         };
     }
 
+    /**
+     * Supprime le plateau d'un personnage de la base de données.
+     * Cette méthode est utilisée avant de sauvegarder un nouveau plateau pour s'assurer qu'il n'y a pas de doublons.
+     *
+     * @param character Le personnage dont le plateau doit être supprimé
+     */
     public void deleteBoardByCharacter(Character character) {
         String sql = "DELETE FROM boards WHERE character_id = ?";
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {

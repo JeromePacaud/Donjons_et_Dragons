@@ -6,8 +6,9 @@ import fr.campus.dungeoncrawler.stuff.Stuff;
 import fr.campus.dungeoncrawler.stuff.defensivestuff.healing.Potion;
 import fr.campus.dungeoncrawler.stuff.offensivestuff.OffensiveStuff;
 
-/** Tile représentant un coffre contenant une récompense pour le personnage.
- * Lorsque le personnage interagit avec ce tile, il reçoit la récompense s'il peut l'équiper.
+/**
+ * La classe ChestTile représente une tuile de coffre dans le jeu.
+ * Elle contient une récompense que le personnage peut obtenir en interagissant avec elle.
  */
 public class ChestTile extends Tile {
     private Stuff reward;
@@ -15,7 +16,7 @@ public class ChestTile extends Tile {
     private Menu menu;
 
     /**
-     * Constructeur de ChestTile.
+     * Constructeur de la classe ChestTile.
      * @param reward La récompense contenue dans le coffre.
      */
     public ChestTile(Stuff reward) {
@@ -26,38 +27,40 @@ public class ChestTile extends Tile {
     }
 
     /**
-     * Getter pour vérifier si le coffre a déjà été ouvert.
-     * @return true si le coffre a été ouvert, false sinon.
-     */
-    public boolean isOpened() {
-        return opened;
-    }
-
-    /**
-     * Getter pour la récompense contenue dans le coffre.
-     * @return La récompense du coffre.
+     * Retourne la récompense contenue dans le coffre.
+     *
+     * @return reward
      */
     public Stuff getReward() {
         return reward;
     }
 
     /**
-     * Setter pour la récompense du coffre.
-     * @param reward La nouvelle récompense à placer dans le coffre.
+     * Retourne true si le coffre a été ouvert, false sinon.
+     *
+     * @return opened
      */
-    public void setReward(Stuff reward) {
-        this.reward = reward;
+    public boolean isOpened() {
+        return opened;
     }
 
     /**
-     * Retourne une représentation visuelle du coffre.
-     * @return Une chaîne de caractères représentant le coffre.
+     * Retourne l'image représentant la tuile de coffre.
+     *
+     * @return une chaîne de caractères représentant l'image du coffre
      */
     @Override
     public String getTileImage() {
         return "\uD83D\uDD4B";
     }
 
+    /**
+     * Gère l'interaction du personnage avec la tuile de coffre.
+     * Si le coffre est déjà ouvert, affiche un message d'avertissement.
+     * Sinon, affiche la récompense trouvée et gère son acquisition en fonction de son type.
+     *
+     * @param character Le personnage qui interagit avec le coffre
+     */
     private void handlePotion(Potion potion, Character character) {
         if (character.getInventory().isPotionsFull()) {
             System.out.println(">>> ⚠️ Inventaire plein de potions ! La potion est abandonnée.");
@@ -80,6 +83,14 @@ public class ChestTile extends Tile {
         character.getInventory().addPotion(potion);
     }
 
+    /**
+     * Gère l'acquisition d'un équipement offensif trouvé dans le coffre.
+     * Si l'inventaire du personnage n'est pas plein, ajoute l'équipement et l'équipe si c'est le premier.
+     * Sinon, affiche un menu de remplacement pour choisir une arme à remplacer ou abandonner l'équipement.
+     *
+     * @param stuff L'équipement offensif trouvé
+     * @param character Le personnage qui interagit avec le coffre
+     */
     private void handleOffensiveEquipment(OffensiveStuff stuff, Character character) {
         if (!character.getInventory().isWeaponsFull()) {
             character.getInventory().addWeapon(stuff);
@@ -101,8 +112,11 @@ public class ChestTile extends Tile {
     }
 
     /**
-     * Permet au personnage d'interagir avec le coffre. Si le personnage peut équiper la récompense, il la reçoit.
-     * @param character Le personnage qui interagit avec le coffre.
+     * Gère l'interaction du personnage avec la tuile de coffre.
+     * Si le coffre est déjà ouvert, affiche un message d'avertissement.
+     * Sinon, affiche la récompense trouvée et gère son acquisition en fonction de son type.
+     *
+     * @param character Le personnage qui interagit avec le coffre
      */
     @Override
     public void interact(Character character) {

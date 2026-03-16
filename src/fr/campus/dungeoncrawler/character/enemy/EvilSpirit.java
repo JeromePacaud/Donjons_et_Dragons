@@ -3,6 +3,10 @@ package fr.campus.dungeoncrawler.character.enemy;
 import fr.campus.dungeoncrawler.character.Character;
 import fr.campus.dungeoncrawler.character.Wizard;
 
+/**
+ * Class representing the EvilSpirit enemy in the Dungeon Crawler game.
+ * This class extends the Enemy class and provides specific attributes and behaviors for the EvilSpirit.
+ */
 public class EvilSpirit extends Enemy{
 
     public EvilSpirit() {

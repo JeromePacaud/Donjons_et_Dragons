@@ -5,6 +5,10 @@ import fr.campus.dungeoncrawler.stuff.defensivestuff.defense.Shield;
 import fr.campus.dungeoncrawler.stuff.defensivestuff.healing.Potion;
 import fr.campus.dungeoncrawler.stuff.offensivestuff.Weapon;
 
+/**
+ * Class representing the Warrior character in the Dungeon Crawler game.
+ * This class extends the Character class and provides specific attributes and behaviors for the Warrior.
+ */
 public class Warrior extends Character {
 
     public Warrior(String name) {

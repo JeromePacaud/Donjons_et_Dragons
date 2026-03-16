@@ -20,6 +20,10 @@ public class EnemyTile extends Tile {
     private int gold_evil_spirit = 6;
     private int gold_dragon = 10;
 
+    /**
+     * Constructeur de la classe EnemyTile.
+     * @param enemy L'ennemi présent sur la tuile.
+     */
     public EnemyTile(Enemy enemy) {
         super("Enemy");
         this.enemy = enemy;
@@ -30,6 +34,11 @@ public class EnemyTile extends Tile {
     public void setEnemy(Enemy enemy) { this.enemy = enemy; }
     public boolean isDefeated() { return this.enemy == null; }
 
+    /**
+     * Permet au personnage d'interagir avec l'ennemi présent sur la tuile.
+     * Si l'ennemi ne peut pas attaquer le personnage, il disparaît.
+     * Sinon, un combat est déclenché entre le personnage et l'ennemi.
+     */
     @Override
     public void interact(Character character) {
         if (this.enemy == null) return;
@@ -81,8 +90,9 @@ public class EnemyTile extends Tile {
     }
 
     /**
-     * Vérifie si le combat est terminé.
-     * Si l'ennemi est vaincu, attribue une récompense en or au personnage.
+     * Vérifie si le combat est terminé après une attaque.
+     * Si l'ennemi est vaincu, le personnage reçoit une récompense en or.
+     * Si le personnage est vaincu, le combat se termine également.
      */
     private boolean isCombatOver(Character character, boolean combatOver) {
         if (this.enemy.getLifeLevel() <= 0) {
@@ -109,6 +119,10 @@ public class EnemyTile extends Tile {
         return 1;
     }
 
+    /**
+     * Permet au personnage de sélectionner une arme dans son inventaire et d'attaquer l'ennemi.
+     * Si l'arme choisie n'est pas déjà équipée, elle est équipée avant l'attaque.
+     */
     private void selectWeaponAndAttack(Character character) {
         this.menu.displayWeaponSelectMenu(character);
         int weaponChoice = this.menu.readInt();
@@ -122,6 +136,9 @@ public class EnemyTile extends Tile {
         character.attack(this.enemy);
     }
 
+    /**
+     * Retourne l'image de la tuile. Si l'ennemi est vaincu, retourne l'image d'une tuile vide.
+     */
     @Override
     public String getTileImage() {
         if (this.enemy == null) return new EmptyTile().getTileImage();
