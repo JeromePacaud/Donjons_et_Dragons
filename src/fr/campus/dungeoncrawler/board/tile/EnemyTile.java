@@ -1,6 +1,6 @@
 package fr.campus.dungeoncrawler.board.tile;
 
-import fr.campus.dungeoncrawler.character.enemy.Enemy;
+import fr.campus.dungeoncrawler.character.enemy.*;
 import fr.campus.dungeoncrawler.character.Character;
 import fr.campus.dungeoncrawler.menu.Menu;
 import fr.campus.dungeoncrawler.stuff.offensivestuff.OffensiveStuff;
@@ -10,39 +10,26 @@ import fr.campus.dungeoncrawler.stuff.offensivestuff.OffensiveStuff;
  * Cette tuile permet au personnage de rencontrer un ennemi et de déclencher un combat.
  */
 public class EnemyTile extends Tile {
+
     private Enemy enemy;
     private Menu menu;
 
-    /**
-     * Constructeur de la classe EnemyTile.
-     * @param enemy L'ennemi présent sur cette tuile.
-     */
+    private int gold_goblin = 3;
+    private int gold_sorcerer = 5;
+    private int gold_orc = 5;
+    private int gold_evil_spirit = 6;
+    private int gold_dragon = 10;
+
     public EnemyTile(Enemy enemy) {
         super("Enemy");
         this.enemy = enemy;
         this.menu = new Menu();
     }
 
-    /**
-     * Getter pour l'ennemi présent sur cette tuile.
-     * @return L'ennemi présent sur cette tuile.
-     */
-    public Enemy getEnemy() {
-        return this.enemy;
-    }
+    public Enemy getEnemy() { return this.enemy; }
+    public void setEnemy(Enemy enemy) { this.enemy = enemy; }
+    public boolean isDefeated() { return this.enemy == null; }
 
-    /**
-     * Setter pour l'ennemi présent sur cette tuile.
-     * @param enemy L'ennemi à placer sur cette tuile.
-     */
-    public void setEnemy(Enemy enemy) {
-        this.enemy = enemy;
-    }
-
-    /**
-     * Permet au personnage d'interagir avec cette tuile, ce qui déclenche un combat avec l'ennemi présent sur cette tuile.
-     * @param character Le personnage qui interagit avec cette tuile.
-     */
     @Override
     public void interact(Character character) {
         if (this.enemy == null) return;
@@ -93,9 +80,14 @@ public class EnemyTile extends Tile {
         }
     }
 
+    /**
+     * Vérifie si le combat est terminé.
+     * Si l'ennemi est vaincu, attribue une récompense en or au personnage.
+     */
     private boolean isCombatOver(Character character, boolean combatOver) {
         if (this.enemy.getLifeLevel() <= 0) {
             System.out.println(">>> 💀 " + this.enemy.getName() + " est vaincu !");
+            character.addGold(getGoldReward(this.enemy));
             this.enemy = null;
             combatOver = true;
         } else {
@@ -105,31 +97,31 @@ public class EnemyTile extends Tile {
         return combatOver;
     }
 
+    /**
+     * Retourne la récompense en or selon le type d'ennemi.
+     */
+    private int getGoldReward(Enemy enemy) {
+        if (enemy instanceof Dragon) return gold_dragon;
+        if (enemy instanceof Sorcerer) return gold_sorcerer;
+        if (enemy instanceof Orc) return gold_orc;
+        if (enemy instanceof EvilSpirit) return gold_evil_spirit;
+        if (enemy instanceof Goblin) return gold_goblin;
+        return 1;
+    }
+
     private void selectWeaponAndAttack(Character character) {
-
         this.menu.displayWeaponSelectMenu(character);
-
         int weaponChoice = this.menu.readInt();
 
         if (weaponChoice >= 1 && weaponChoice <= character.getInventory().getWeaponsSize()) {
             OffensiveStuff chosen = character.getInventory().getWeapon(weaponChoice - 1);
-
             if (!chosen.equals(character.getOffensiveStuff())) {
                 character.equipFromInventory(chosen);
             }
         }
-
         character.attack(this.enemy);
     }
 
-    public boolean isDefeated() {
-        return this.enemy == null;
-    }
-
-    /**
-     * Retourne l'image de la tuile, qui est l'image de l'ennemi présent sur cette tuile.
-     * @return L'image de la tuile.
-     */
     @Override
     public String getTileImage() {
         if (this.enemy == null) return new EmptyTile().getTileImage();

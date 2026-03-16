@@ -1,7 +1,8 @@
 package fr.campus.dungeoncrawler.stuff.offensivestuff;
 
-import fr.campus.dungeoncrawler.stuff.Stuff;
 import fr.campus.dungeoncrawler.character.Character;
+import fr.campus.dungeoncrawler.character.enemy.Enemy;
+import fr.campus.dungeoncrawler.stuff.Stuff;
 
 public abstract class OffensiveStuff extends Stuff {
 
@@ -10,6 +11,15 @@ public abstract class OffensiveStuff extends Stuff {
     public OffensiveStuff(String name, String type, int damage) {
         super(name, type);
         this.damage = damage;
+    }
+
+    /**
+     * Retourne les dégâts infligés à un ennemi donné.
+     * Par défaut retourne le statBonus standard.
+     * Les sous-classes peuvent surcharger cette méthode pour des bonus spéciaux (Arc vs Dragon, etc.)
+     */
+    public int getDamageAgainst(Enemy enemy) {
+        return this.getStatBonus();
     }
 
     @Override
@@ -24,7 +34,6 @@ public abstract class OffensiveStuff extends Stuff {
         character.setAttackLevel(character.getAttackLevel() + getStatBonus());
     }
 
-    public int getAttackLevel() { return damage; }
-
-    public void setAttackLevel(int damage) { this.damage = damage; }
+    public int getAttackLevel()          { return damage; }
+    public void setAttackLevel(int dmg)  { this.damage = dmg; }
 }

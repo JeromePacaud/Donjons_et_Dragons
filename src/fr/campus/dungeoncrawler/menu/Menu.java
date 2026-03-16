@@ -1,10 +1,13 @@
 package fr.campus.dungeoncrawler.menu;
 
+import fr.campus.dungeoncrawler.board.tile.Tile;
 import fr.campus.dungeoncrawler.character.Character;
 import fr.campus.dungeoncrawler.character.Warrior;
+import fr.campus.dungeoncrawler.board.tile.MerchantTile;
 import fr.campus.dungeoncrawler.stuff.defensivestuff.healing.Potion;
 import fr.campus.dungeoncrawler.stuff.offensivestuff.OffensiveStuff;
 
+import java.util.List;
 import java.util.Scanner;
 
 public class Menu {
@@ -50,7 +53,6 @@ public class Menu {
 
     public void displayCombatMenu(Character character) {
         System.out.println("\n⚔️  Que faites-vous ?");
-
         System.out.println("[1] Attaquer");
 
         String weaponInfo = character.getInventory().isWeaponsEmpty()
@@ -62,7 +64,6 @@ public class Menu {
                 ? " (vide)"
                 : " (" + character.getInventory().getPotionsSize() + " dispo)";
         System.out.println("[3] Utiliser une potion" + potionInfo);
-
         System.out.println("[4] Fuir");
         System.out.print("Votre choix : ");
     }
@@ -74,7 +75,7 @@ public class Menu {
     }
 
     public void displayWeaponReplaceMenu(Character character, OffensiveStuff newItem) {
-        System.out.println("⚠️ Inventaire armes/sorts plein !");
+        System.out.println(">>> ⚠️ Inventaire armes/sorts plein !");
         System.out.println("Que voulez-vous faire avec : " + newItem.getName() + " (PA: " + newItem.getStatBonus() + ") ?");
         for (int i = 0; i < character.getInventory().getWeaponsSize(); i++) {
             OffensiveStuff weapon = character.getInventory().getWeapon(i);
@@ -93,6 +94,48 @@ public class Menu {
             System.out.println("[" + (i + 1) + "] " + weapon.toString() + active);
         }
         System.out.println("[" + (character.getInventory().getWeaponsSize() + 1) + "] Attaquer sans changer d'arme");
+        System.out.print("Votre choix : ");
+    }
+
+    public void displayMerchantMenu() {
+        System.out.println("\n🧙 Que voulez-vous faire ?");
+        System.out.println("[1] Acheter");
+        System.out.println("[2] Vendre");
+        System.out.println("[3] Partir");
+        System.out.print("Votre choix : ");
+    }
+
+    /**
+     * Affiche le menu d'achat adapté à la classe du personnage.
+     */
+    public void displayBuyMenu(Character character, MerchantTile merchant) {
+        boolean isWarrior = character instanceof Warrior;
+        System.out.println("\n🛒 Que voulez-vous acheter ?");
+        System.out.println("[1] Potion Standard (" + merchant.getPriceStandardPotion() + " 🪙)");
+        System.out.println("[2] Grande Potion (" + merchant.getPriceBigPotion() + " 🪙)");
+        System.out.println("[3] Coup de Tonnerre (" + merchant.getPriceThunderbolt() + " 🪙)");
+        if (isWarrior) {
+            System.out.println("[4] Masse (" + merchant.getPriceMace() + " 🪙)");
+            System.out.println("[5] Épée (" + merchant.getPriceSword() + " 🪙)");
+            System.out.println("[6] Arc (" + merchant.getPriceBow() + " 🪙)");
+        } else {
+            System.out.println("[4] Éclair (" + merchant.getPriceLigthning() + " 🪙)");
+            System.out.println("[5] Boule de feu (" + merchant.getPriceFireball() + " 🪙)");
+            System.out.println("[6] Invisibilité (" + merchant.getPriceInvisibility() + " 🪙)");
+        }
+        System.out.println("[7] Retour");
+        System.out.print("Votre choix : ");
+    }
+
+    /**
+     * Affiche le menu de vente avec la liste dynamique des items vendables.
+     */
+    public void displaySellMenu(List<Object> items, List<Integer> prices) {
+        System.out.println("\n💰 Que voulez-vous vendre ?");
+        for (int i = 0; i < items.size(); i++) {
+            System.out.println("[" + (i + 1) + "] " + items.get(i).toString() + " → " + prices.get(i) + " 🪙");
+        }
+        System.out.println("[" + (items.size() + 1) + "] Retour");
         System.out.print("Votre choix : ");
     }
 
@@ -120,7 +163,6 @@ public class Menu {
     public String readString() {
         return scanner.nextLine();
     }
-
 
     @Override
     public String toString() {

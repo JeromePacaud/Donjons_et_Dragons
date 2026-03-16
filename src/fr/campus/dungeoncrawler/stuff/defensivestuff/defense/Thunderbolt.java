@@ -1,12 +1,14 @@
-package fr.campus.dungeoncrawler.stuff.defensivestuff.healing;
+package fr.campus.dungeoncrawler.stuff.defensivestuff.defense;
+
+import fr.campus.dungeoncrawler.stuff.defensivestuff.healing.Potion;
 
 /**
  * Potion Coup de Tonnerre.
  * Active un buff qui double la puissance d'attaque du personnage pour le prochain combat uniquement.
  */
-public class ThunderBolt extends Potion {
+public class Thunderbolt extends Potion {
 
-    public ThunderBolt() {
+    public Thunderbolt() {
         super("Coup de Tonnerre", 0);
     }
 

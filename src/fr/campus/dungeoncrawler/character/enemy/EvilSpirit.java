@@ -35,7 +35,7 @@ public class EvilSpirit extends Enemy{
     @Override
     public String toString() {
         return "\n=== " + this.getName() + " === \n"
-                + "PV : " + this.getLifeLevel() + "\n"
-                + "PA : " + this.getAttackLevel() + "\n";
+            + "PV : " + this.getLifeLevel() + "\n"
+            + "PA : " + this.getAttackLevel() + "\n";
     }
 }

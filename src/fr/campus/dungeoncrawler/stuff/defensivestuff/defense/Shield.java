@@ -10,8 +10,8 @@ public class Shield extends DefensiveStuff {
 
     /** Constructeur de la classe Shield.
      *
-     * @param name          Le nom du bouclier (ex : "Bouclier en bois").
-     * @param type          Le type de l'équipement (ex : "Bouclier").
+     * @param name Le nom du bouclier (ex : "Bouclier en bois").
+     * @param type Le type de l'équipement (ex : "Bouclier").
      * @param defenseAmount La quantité de défense que le bouclier offre.
      */
     public Shield(String name, String type, int defenseAmount) {

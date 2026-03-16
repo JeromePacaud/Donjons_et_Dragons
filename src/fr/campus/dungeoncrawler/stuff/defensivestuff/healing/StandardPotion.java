@@ -7,6 +7,6 @@ public class StandardPotion extends Potion {
 
     @Override
     public String toString() {
-        return "Potion \uD83E\uDDEA : " + this.getName() + " (Soin : +" + this.getStatBonus() + " PV)";
+        return "=== Potion === \uD83E\uDDEA : " + this.getName() + " (Soin : +" + this.getStatBonus() + " PV)";
     }
 }

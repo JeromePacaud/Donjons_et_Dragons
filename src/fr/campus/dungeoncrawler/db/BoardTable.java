@@ -6,10 +6,10 @@ import fr.campus.dungeoncrawler.character.Character;
 import fr.campus.dungeoncrawler.character.enemy.*;
 import fr.campus.dungeoncrawler.stuff.Stuff;
 import fr.campus.dungeoncrawler.stuff.defensivestuff.defense.ProtectionSpell;
+import fr.campus.dungeoncrawler.stuff.defensivestuff.defense.Thunderbolt;
 import fr.campus.dungeoncrawler.stuff.defensivestuff.defense.WoodShield;
 import fr.campus.dungeoncrawler.stuff.defensivestuff.healing.BigPotion;
 import fr.campus.dungeoncrawler.stuff.defensivestuff.healing.StandardPotion;
-import fr.campus.dungeoncrawler.stuff.defensivestuff.healing.ThunderBolt;
 import fr.campus.dungeoncrawler.stuff.offensivestuff.armory.*;
 
 import java.sql.*;
@@ -61,7 +61,6 @@ public class BoardTable {
     }
 
     public void saveBoard(Board board, Character character) {
-
         deleteBoardByCharacter(character);
 
         String sql = "INSERT INTO boards (character_id, size) VALUES (?, ?)";
@@ -159,6 +158,8 @@ public class BoardTable {
         switch (tileType) {
             case "Start": return new StartTile();
             case "End": return new EndTile();
+            case "Merchant": return new MerchantTile();
+            case "Inn": return new InnTile();
 
             case "Enemy":
                 String enemyType = rs.getString("enemy_type");
@@ -168,9 +169,8 @@ public class BoardTable {
 
             case "Chest":
                 String stuffType = rs.getString("stuff_type");
-                boolean isOpened  = rs.getBoolean("is_opened");
+                boolean isOpened = rs.getBoolean("is_opened");
                 if (isOpened || stuffType == null) return new EmptyTile();
-
                 Stuff reward = buildStuff(stuffType);
                 if (reward == null) return new EmptyTile();
                 return new ChestTile(reward);
@@ -201,7 +201,7 @@ public class BoardTable {
                 o.setLifeLevel(enemyHp);
                 return new EnemyTile(o);
             }
-            case "EvilSpirit" : {
+            case "EvilSpirit":{
                 EvilSpirit es = new EvilSpirit();
                 es.setLifeLevel(enemyHp);
                 return new EnemyTile(es);
@@ -219,10 +219,10 @@ public class BoardTable {
             case "StandardPotion" -> new StandardPotion();
             case "BigPotion" -> new BigPotion();
             case "WoodShield" -> new WoodShield();
-            case "ProtectionSpell" -> new ProtectionSpell();
+            case "ProtectionSpell"-> new ProtectionSpell();
             case "Bow" -> new Bow();
             case "Invisibility" -> new Invisibility();
-            case "ThunderStrike" -> new ThunderBolt();
+            case "Thunderbolt" -> new Thunderbolt();
             default -> {
                 System.err.println("Type d'item inconnu : " + stuffType);
                 yield null;

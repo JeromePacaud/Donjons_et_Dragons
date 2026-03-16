@@ -7,6 +7,6 @@ public class BigPotion extends Potion {
 
     @Override
     public String toString() {
-        return "Potion ⚗️ : " + this.getName() + " (Soin : +" + this.getStatBonus() + " PV)";
+        return "=== Potion === ⚗️ : " + this.getName() + " (Soin : +" + this.getStatBonus() + " PV)";
     }
 }

@@ -35,7 +35,7 @@ public class Orc extends Enemy{
     @Override
     public String toString() {
         return "\n=== Orc === \n"
-                + "PV : " + this.getLifeLevel() + "\n"
-                + "PA : " + this.getAttackLevel() + "\n";
+            + "PV : " + this.getLifeLevel() + "\n"
+            + "PA : " + this.getAttackLevel() + "\n";
     }
 }

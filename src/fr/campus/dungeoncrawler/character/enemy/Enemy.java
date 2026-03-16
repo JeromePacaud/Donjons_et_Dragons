@@ -15,8 +15,7 @@ public abstract class Enemy extends Character {
         int enemyDamage = Math.max(this.getAttackLevel() - character.getDefenseLevel(), 0);
         character.setLifeLevel(character.getLifeLevel() - enemyDamage);
         System.out.println(">>> " + this.getName() + " riposte et inflige " + enemyDamage + " dégâts. "
-                + "(" + character.getName() + " PV : " + character.getLifeLevel() + ")");
-        // System.out.println("\uD83D\uDCA8 " + this.getName() + " prend la fuite !");
+            + "(" + character.getName() + " PV : " + character.getLifeLevel() + ")");
     }
 
     public abstract boolean canAttack(Character character);

@@ -3,24 +3,19 @@ package fr.campus.dungeoncrawler.db;
 import fr.campus.dungeoncrawler.character.Character;
 import fr.campus.dungeoncrawler.character.Warrior;
 import fr.campus.dungeoncrawler.character.Wizard;
-import fr.campus.dungeoncrawler.stuff.defensivestuff.DefensiveStuff;
-import fr.campus.dungeoncrawler.stuff.defensivestuff.defense.WoodShield;
-import fr.campus.dungeoncrawler.stuff.offensivestuff.OffensiveStuff;
 import fr.campus.dungeoncrawler.stuff.Stuff;
 import fr.campus.dungeoncrawler.stuff.defensivestuff.defense.ProtectionSpell;
-import fr.campus.dungeoncrawler.stuff.offensivestuff.armory.Fireball;
-import fr.campus.dungeoncrawler.stuff.offensivestuff.armory.Lightning;
-import fr.campus.dungeoncrawler.stuff.offensivestuff.armory.Mace;
-import fr.campus.dungeoncrawler.stuff.offensivestuff.armory.Sword;
+import fr.campus.dungeoncrawler.stuff.defensivestuff.defense.WoodShield;
+import fr.campus.dungeoncrawler.stuff.offensivestuff.OffensiveStuff;
+import fr.campus.dungeoncrawler.stuff.offensivestuff.armory.*;
 
-import java.rmi.ServerError;
 import java.sql.*;
 
 public class CharacterTable {
 
     private Connection connection;
 
-    public CharacterTable(Connection connection) {this.connection = connection;}
+    public CharacterTable(Connection connection) { this.connection = connection; }
 
     public void createCharacterTable() {
         String sql = "CREATE TABLE IF NOT EXISTS characters ("
@@ -30,7 +25,8 @@ public class CharacterTable {
                 + "life_level INT NOT NULL,"
                 + "damage INT NOT NULL,"
                 + "defense INT NOT NULL DEFAULT 0,"
-                + "position INT NOT NULL"
+                + "position INT NOT NULL,"
+                + "gold INT NOT NULL DEFAULT 0"
                 + ")";
         try {
             connection.createStatement().execute(sql);
@@ -59,15 +55,12 @@ public class CharacterTable {
     }
 
     public void insertCharacter(Character character) {
-        String sql = "INSERT INTO characters (type, name, life_level, damage, defense, position) VALUES (?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO characters (type, name, life_level, damage, defense, position, gold) VALUES (?, ?, ?, ?, ?, ?, ?)";
         try (PreparedStatement stmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             setStatement(character, stmt);
             stmt.executeUpdate();
-
             ResultSet keys = stmt.getGeneratedKeys();
-            if (keys.next()) {
-                character.setId(keys.getInt(1));
-            }
+            if (keys.next()) character.setId(keys.getInt(1));
         } catch (SQLException e) {
             System.err.println("Erreur lors de la sauvegarde : " + e.getMessage());
         }
@@ -80,13 +73,14 @@ public class CharacterTable {
         stmt.setInt(4, character.getAttackLevel());
         stmt.setInt(5, character.getDefenseLevel());
         stmt.setInt(6, character.getPosition());
+        stmt.setInt(7, character.getGold());
     }
 
     public void updateCharacter(Character character) {
-        String sql = "UPDATE characters SET type = ?, name = ?, life_level = ?, damage = ?, defense = ?, position = ? WHERE id = ?";
+        String sql = "UPDATE characters SET type = ?, name = ?, life_level = ?, damage = ?, defense = ?, position = ?, gold = ? WHERE id = ?";
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             setStatement(character, stmt);
-            stmt.setInt(7, character.getId());
+            stmt.setInt(8, character.getId());
             stmt.executeUpdate();
             System.out.println("Personnage <" + character.getName() + "> mis à jour !");
         } catch (SQLException e) {
@@ -122,9 +116,9 @@ public class CharacterTable {
                 character.setAttackLevel(rs.getInt("damage"));
                 character.setDefenseLevel(rs.getInt("defense"));
                 character.setPosition(rs.getInt("position"));
+                character.setGold(rs.getInt("gold"));
 
                 loadEquipments(character);
-
                 return character;
             }
         } catch (SQLException e) {
@@ -140,11 +134,12 @@ public class CharacterTable {
             while (rs.next()) {
                 System.out.println(
                         "[" + rs.getInt("id") + "] "
-                        + rs.getString("name") + " (" + rs.getString("type") + ")\n"
-                        + " | PV : " + rs.getInt("life_level") + "\n"
-                        + " | Attaque  : " + rs.getInt("damage") + "\n"
-                        + " | Défense  : " + rs.getInt("defense") + "\n"
-                        + " | Position : " + rs.getInt("position") + "\n"
+                            + rs.getString("name") + " (" + rs.getString("type") + ")\n"
+                            + " | PV       : " + rs.getInt("life_level") + "\n"
+                            + " | Attaque  : " + rs.getInt("damage") + "\n"
+                            + " | Défense  : " + rs.getInt("defense") + "\n"
+                            + " | Position : " + rs.getInt("position") + "\n"
+                            + " | Or       : " + rs.getInt("gold") + " 🪙\n"
                 );
             }
         } catch (SQLException e) {
@@ -154,10 +149,8 @@ public class CharacterTable {
 
     public void saveEquipments(Character character) {
         deleteEquipments(character);
-
         String sql = "INSERT INTO equipments (character_id, slot, type, name, stat_bonus) VALUES (?, ?, ?, ?, ?)";
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-
             if (character.getOffensiveStuff() != null) {
                 Stuff s = character.getOffensiveStuff();
                 stmt.setInt(1, character.getId());
@@ -167,7 +160,6 @@ public class CharacterTable {
                 stmt.setInt(5, s.getStatBonus());
                 stmt.executeUpdate();
             }
-
             if (character.getDefensiveStuff() != null) {
                 Stuff s = character.getDefensiveStuff();
                 stmt.setInt(1, character.getId());
@@ -177,7 +169,6 @@ public class CharacterTable {
                 stmt.setInt(5, s.getStatBonus());
                 stmt.executeUpdate();
             }
-
         } catch (SQLException e) {
             System.err.println("Erreur lors de la sauvegarde des équipements : " + e.getMessage());
         }
@@ -188,16 +179,11 @@ public class CharacterTable {
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setInt(1, character.getId());
             ResultSet rs = stmt.executeQuery();
-
             while (rs.next()) {
                 String slot = rs.getString("slot");
                 String type = rs.getString("type");
-                String name = rs.getString("name");
-                int statBonus = rs.getInt("stat_bonus");
-
-                Stuff stuff = buildStuff(type, name, statBonus);
+                Stuff stuff = buildStuff(type);
                 if (stuff == null) continue;
-
                 if (slot.equals("offensive")) {
                     character.setOffensiveStuff(stuff);
                 } else {
@@ -219,14 +205,16 @@ public class CharacterTable {
         }
     }
 
-    private Stuff buildStuff(String type, String name, int statBonus) {
+    private Stuff buildStuff(String type) {
         return switch (type) {
             case "Sword" -> new Sword();
             case "Mace" -> new Mace();
+            case "Bow" -> new Bow();
             case "Lightning" -> new Lightning();
             case "Fireball" -> new Fireball();
+            case "Invisibility" -> new Invisibility();
             case "WoodShield" -> new WoodShield();
-            case "ProtectionSpell" -> new ProtectionSpell();
+            case "ProtectionSpell"-> new ProtectionSpell();
             default -> {
                 System.err.println("Type d'équipement inconnu : " + type);
                 yield null;
@@ -236,14 +224,11 @@ public class CharacterTable {
 
     public boolean isEmpty() {
         String sql = "SELECT 1 FROM characters LIMIT 1";
-
         try (PreparedStatement stmt = connection.prepareStatement(sql);
-             ResultSet rs = stmt.executeQuery()) {
-
+            ResultSet rs = stmt.executeQuery()) {
             return !rs.next();
-
         } catch (SQLException e) {
-            System.err.println("Erreur : " + e.getMessage());;
+            System.err.println("Erreur : " + e.getMessage());
         }
         return false;
     }

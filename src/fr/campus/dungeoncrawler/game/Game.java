@@ -1,9 +1,7 @@
 package fr.campus.dungeoncrawler.game;
 
 import fr.campus.dungeoncrawler.board.Board;
-import fr.campus.dungeoncrawler.board.tile.ChestTile;
-import fr.campus.dungeoncrawler.board.tile.EnemyTile;
-import fr.campus.dungeoncrawler.board.tile.Tile;
+import fr.campus.dungeoncrawler.board.tile.*;
 import fr.campus.dungeoncrawler.character.Character;
 import fr.campus.dungeoncrawler.character.Warrior;
 import fr.campus.dungeoncrawler.character.Wizard;
@@ -12,18 +10,9 @@ import fr.campus.dungeoncrawler.db.CharacterTable;
 import fr.campus.dungeoncrawler.db.InventoryTable;
 import fr.campus.dungeoncrawler.db.SQLDatabaseConnection;
 import fr.campus.dungeoncrawler.dice.SixSidedDice;
-import fr.campus.dungeoncrawler.dice.TwentySidedDice;
 import fr.campus.dungeoncrawler.exceptions.OutOfBoardException;
 import fr.campus.dungeoncrawler.menu.Menu;
 
-import java.util.Random;
-
-/**
- * La classe Game est la classe centrale du projet Dungeon Crawler. Elle gère le déroulement du jeu,
- * les interactions entre les différentes classes (Character, Board, Dice, Menu) et la connexion à la base de données.
- * Elle contient la boucle principale du jeu et les méthodes pour créer un personnage,
- * jouer une partie, appliquer les effets des cases et gérer la fin de partie.
- */
 public class Game {
 
     private SQLDatabaseConnection db;
@@ -36,12 +25,8 @@ public class Game {
     private Menu menu;
     private boolean running;
 
-    /**
-     * Constructeur de la classe Game. Initialise les composants du jeu : le plateau, le dé, le menu,
-     * la connexion à la base de données et les variables de contrôle.
-     */
     public Game() {
-        this.board = new Board(74);
+        this.board = new Board(90);
         this.dice = new SixSidedDice();
         this.menu = new Menu();
         this.running = true;
@@ -59,11 +44,6 @@ public class Game {
         this.inventoryTable.createInventoryTable();
     }
 
-    /**
-     * Démarre le jeu en affichant le menu principal et en gérant les choix de l'utilisateur.
-     * Permet de créer un personnage, charger un personnage existant, supprimer un personnage ou quitter le jeu.
-     * En fonction du choix de l'utilisateur, appelle les méthodes appropriées pour gérer la suite du jeu.
-     */
     public void start() {
         while (running) {
             this.menu.displayMainMenu();
@@ -74,7 +54,6 @@ public class Game {
                     createCharacter();
                     characterMenu();
                     break;
-
                 case 2:
                     if (this.playerTable.isEmpty()) {
                         this.menu.displayMessage("\nLa table est vide.");
@@ -93,7 +72,6 @@ public class Game {
                         }
                     }
                     break;
-
                 case 3:
                     this.playerTable.fetchAllCharacters();
                     this.menu.displayMessage("Entrez l'id du personnage à supprimer : ");
@@ -101,35 +79,25 @@ public class Game {
                     Character toDelete = this.playerTable.loadCharacter(deleteId);
                     if (toDelete != null) {
                         this.menu.displayMessage(
-                            "Êtes-vous sûr de vouloir supprimer " + toDelete.getName() + " ? (1 = Oui / 2 = Non)"
+                                "Êtes-vous sûr de vouloir supprimer " + toDelete.getName() + " ? (1 = Oui / 2 = Non)"
                         );
                         int confirm = this.menu.readInt();
-                        if (confirm == 1) {
-                            this.playerTable.deleteCharacter(toDelete);
-                        }
+                        if (confirm == 1) this.playerTable.deleteCharacter(toDelete);
                     } else {
                         this.menu.displayMessage("Aucun personnage trouvé avec l'id " + deleteId + ".");
                     }
                     break;
-
                 case 4:
                     this.menu.displayMessage("Au revoir !");
                     this.running = false;
                     this.db.closeConnection();
                     break;
-
                 default:
                     this.menu.displayMessage("Choix invalide.");
             }
         }
     }
 
-    /**
-     * Permet à l'utilisateur de créer un personnage en choisissant une classe (guerrier ou magicien) et en entrant un nom.
-     * Le personnage est ensuite enregistré dans la base de données et un message de confirmation est affiché.
-     * Si le nom entré est invalide (vide ou composé uniquement d'espaces), un message d'erreur est affiché et
-     * la méthode est rappelée pour permettre à l'utilisateur de réessayer.
-     */
     private void createCharacter() {
         this.menu.displayTypeMenu();
         int typeChoice = this.menu.readInt();
@@ -141,21 +109,11 @@ public class Game {
             createCharacter();
         }
 
-        if (typeChoice == 1) {
-            this.character = new Warrior(name);
-        } else {
-            this.character = new Wizard(name);
-        }
-
+        this.character = (typeChoice == 1) ? new Warrior(name) : new Wizard(name);
         this.playerTable.insertCharacter(this.character);
         this.menu.displayMessage("Personnage créé : " + this.character.getName() + " !");
     }
 
-    /**
-     * Affiche le menu de gestion du personnage, permettant à l'utilisateur de voir les statistiques du personnage,
-     * modifier son nom, commencer une partie ou revenir au menu principal. En fonction du choix de l'utilisateur,
-     * appelle les méthodes appropriées pour gérer la suite du jeu.
-     */
     private void characterMenu() {
         boolean inCharacterMenu = true;
 
@@ -192,13 +150,6 @@ public class Game {
         }
     }
 
-    /**
-     * Démarre une partie en initialisant le plateau de jeu, en réinitialisant la position du personnage et en affichant le plateau.
-     * La boucle principale du jeu continue tant que le personnage n'a pas atteint la fin du plateau ou n'est pas mort.
-     * À chaque tour, le joueur lance le dé pour avancer, les effets de la case sur laquelle il atterrit sont appliqués,
-     * les ennemis se déplacent, et le plateau est réaffiché. Si le personnage meurt, un message de fin de partie est affiché.
-     * À la fin de la partie, le menu de fin de partie est affiché pour permettre au joueur de recommencer ou de quitter.
-     */
     private void playGame() {
         Board savedBoard = this.boardTable.loadBoard(this.character);
 
@@ -206,7 +157,7 @@ public class Game {
             this.menu.displayMessage("Plateau chargé pour " + this.character.getName() + " !");
             this.board = savedBoard;
         } else {
-            this.board = new Board(74);
+            this.board = new Board(90);
             this.character.reset();
         }
 
@@ -246,13 +197,13 @@ public class Game {
             this.applyTileEffect(this.board.getTile(this.character.getPosition()));
             this.board.display(this.character);
             this.menu.displayMessage("Position : case " + (this.character.getPosition() + 1) + " / " + this.board.getSize());
+
             if (this.character.isDead()) {
                 this.menu.displayMessage("\n*** " + this.character.getName() + " est mort ! Game Over ***");
                 this.boardTable.deleteBoardByCharacter(this.character);
                 break;
             }
         }
-
 
         if (this.board.isFinished(this.character)) {
             this.boardTable.deleteBoardByCharacter(this.character);
@@ -272,18 +223,6 @@ public class Game {
         this.db.closeConnection();
     }
 
-    /** Applique les effets de la tuile sur laquelle le personnage a atterri.
-     * En fonction du type de tuile, différentes interactions peuvent se produire :
-     * - Si c'est une tuile vide, rien ne se passe.
-     * - Si c'est une tuile avec un ennemi, un combat est déclenché entre le personnage et l'ennemi.
-     * - Si c'est une tuile avec un trésor, le personnage reçoit une récompense (arme, sort ou bouclier) qui peut être
-     * équipée si elle est compatible avec la classe du personnage.
-     * - Si c'est une tuile avec un piège, le personnage subit des dégâts. Le montant des dégâts peut être fixe ou
-     * aléatoire en fonction du type de piège.
-     * - Si c'est une tuile de départ ou d'arrivée, un message est affiché pour indiquer que le personnage a atteint
-     * la case de départ ou d'arrivée.
-     * @param tile La tuile sur laquelle le personnage a atterri et dont les effets doivent être appliqués.
-     */
     private void applyTileEffect(Tile tile) {
         tile.interact(this.character);
 
@@ -296,25 +235,24 @@ public class Game {
         }
     }
 
-    /**
-     * Affiche les statistiques du personnage dans le terminal. Cette méthode peut être appelée à différents moments du jeu
-     * pour permettre au joueur de voir l'état actuel de son personnage, y compris sa vie, son équipement et ses autres
-     * caractéristiques. Les statistiques sont affichées en utilisant la méthode toString() du personnage, qui doit être
-     * implémentée pour fournir une représentation claire et informative des attributs du personnage.
-     */
     private void displayCharacterStats() {
         System.out.println(this.character.toString());
     }
 
     /**
-     * Affiche le menu de fin de partie, permettant au joueur de choisir entre recommencer une partie ou quitter le jeu.
-     * En fonction du choix de l'utilisateur, appelle les méthodes appropriées pour gérer la suite du jeu.
+     * Menu de fin de partie.
+     * Si le joueur recommence, le plateau est régénéré et les marchands/auberges
+     * sont replacés aléatoirement — l'or est remis à 0 via character.reset().
      */
     private void endGameMenu() {
         menu.displayEndGameMenu();
         int choice = menu.readInt();
 
         if (choice == 1) {
+            // Nouvelle partie — reset complet (or remis à 0)
+            this.boardTable.deleteBoardByCharacter(this.character);
+            this.character.reset();
+            this.board = new Board(90); // marchands replacés aléatoirement
             playGame();
         } else {
             menu.displayMessage("Au revoir !");
@@ -323,50 +261,14 @@ public class Game {
         }
     }
 
-    /**
-     *
-     * @return Le personnage actuel du jeu.
-     */
-    public Character getCharacter() { return this.character; }
-
-    /**
-     * Définit le personnage actuel du jeu.
-     * @param character Le personnage à définir pour le jeu.
-     */
-    public void setCharacter(Character character) { this.character = character; }
-
-    /**
-     * @return Le plateau de jeu actuel.
-     */
-    public Board getBoard() { return this.board; }
-
-    /**
-     * Définit le plateau de jeu actuel.
-     * @param board Le plateau de jeu à définir pour le jeu.
-     */
-    public void setBoard(Board board) { this.board = board; }
-
-    /**
-     * @return Le dé utilisé dans le jeu.
-     */
-    public SixSidedDice getDice() { return this.dice; }
-
-    /**
-     * Définit le dé utilisé dans le jeu.
-     * @param dice Le dé à définir pour le jeu.
-     */
-    public void setDice(SixSidedDice dice) { this.dice = dice; }
-
-    /**
-     * @return Le menu utilisé dans le jeu.
-     */
-    public Menu getMenu() { return this.menu; }
-
-    /**
-     * Définit le menu utilisé dans le jeu.
-     * @param menu Le menu à définir pour le jeu.
-     */
-    public void setMenu(Menu menu) { this.menu = menu; }
+    public Character getCharacter()             { return this.character; }
+    public void setCharacter(Character c)       { this.character = c; }
+    public Board getBoard()                     { return this.board; }
+    public void setBoard(Board b)               { this.board = b; }
+    public SixSidedDice getDice()               { return this.dice; }
+    public void setDice(SixSidedDice d)         { this.dice = d; }
+    public Menu getMenu()                       { return this.menu; }
+    public void setMenu(Menu m)                 { this.menu = m; }
 
     @Override
     public String toString() {

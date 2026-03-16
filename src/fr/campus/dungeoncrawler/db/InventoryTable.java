@@ -2,10 +2,10 @@ package fr.campus.dungeoncrawler.db;
 
 import fr.campus.dungeoncrawler.character.Character;
 import fr.campus.dungeoncrawler.inventory.Inventory;
+import fr.campus.dungeoncrawler.stuff.defensivestuff.defense.Thunderbolt;
 import fr.campus.dungeoncrawler.stuff.defensivestuff.healing.BigPotion;
 import fr.campus.dungeoncrawler.stuff.defensivestuff.healing.Potion;
 import fr.campus.dungeoncrawler.stuff.defensivestuff.healing.StandardPotion;
-import fr.campus.dungeoncrawler.stuff.defensivestuff.healing.ThunderBolt;
 import fr.campus.dungeoncrawler.stuff.offensivestuff.OffensiveStuff;
 import fr.campus.dungeoncrawler.stuff.offensivestuff.armory.*;
 
@@ -109,7 +109,7 @@ public class InventoryTable {
         return switch (stuffType) {
             case "StandardPotion" -> new StandardPotion();
             case "BigPotion" -> new BigPotion();
-            case "ThunderStrike" -> new ThunderBolt();
+            case "Thunderbolt" -> new Thunderbolt();
             default -> {
                 System.err.println("Type de potion inconnu : " + stuffType);
                 yield null;
